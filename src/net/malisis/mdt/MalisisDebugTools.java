@@ -27,17 +27,21 @@ package net.malisis.mdt;
 import net.malisis.core.IMalisisMod;
 import net.malisis.core.MalisisCore;
 import net.malisis.core.configuration.Settings;
+import net.minecraftforge.client.ClientCommandHandler;
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 /**
  * @author Ordinastie
- * 
+ *
  */
 @Mod(modid = MalisisDebugTools.modid, name = MalisisDebugTools.modname, version = MalisisDebugTools.version)
 public class MalisisDebugTools implements IMalisisMod
 {
-	public static final String modid = "malisisdoors";
-	public static final String modname = "Malisis' Doors";
+	public static final String modid = "mdt";
+	public static final String modname = "Malisis Debug Tools";
 	public static final String version = "${version}";
 
 	public static MalisisDebugTools instance;
@@ -72,6 +76,19 @@ public class MalisisDebugTools implements IMalisisMod
 	{
 		return null;
 	}
+
 	//#end IMalisisMod
+
+	@EventHandler
+	public static void preInit(FMLPreInitializationEvent event)
+	{
+		new KeyBindings();
+	}
+
+	@EventHandler
+	public static void init(FMLInitializationEvent event)
+	{
+		ClientCommandHandler.instance.registerCommand(new MDTCommand());
+	}
 
 }
