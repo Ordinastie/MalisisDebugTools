@@ -142,7 +142,10 @@ public class DebugTool
 		if (Mouse.isGrabbed() && mc.currentScreen == null)
 		{
 			if (!active)
+			{
 				setActive(true);
+				return;
+			}
 			mc.displayGuiScreen(debugGui);
 			Mouse.setCursorPosition(mouseLastPosX, mouseLastPosY);
 		}

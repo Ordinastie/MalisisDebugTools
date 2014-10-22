@@ -26,6 +26,7 @@ package net.malisis.mdt.gui.component.information;
 
 import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.GuiRenderer;
+import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UILabel;
@@ -42,10 +43,11 @@ public class DefaultInfoComp<T extends IInformation> extends UIContainer<Default
 	protected UILabel value;
 	protected int baseColor = 0xAAAAFF;
 
-	public DefaultInfoComp()
+	public DefaultInfoComp(MalisisGui gui)
 	{
-		label = new UILabel().setColor(baseColor);
-		value = new UILabel().setColor(baseColor).setAnchor(Anchor.RIGHT);
+		super(gui);
+		label = new UILabel(gui).setColor(baseColor);
+		value = new UILabel(gui).setColor(baseColor).setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 

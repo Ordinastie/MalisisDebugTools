@@ -49,7 +49,7 @@ public class BlockGroup extends Group
 	protected DefaultInformation<String> unlocname = new DefaultInformation("mdt.block.unlocname");
 	protected DefaultInformation<Integer> metadata = new DefaultInformation("mdt.block.metadata");
 	protected DefaultInformation<String> position = new DefaultInformation("mdt.block.position");
-	protected DefaultInformation<IIcon[]> icon = new DefaultInformation("mdt.block.icon", new IconInfoComp());
+	protected DefaultInformation<IIcon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
 
 	protected int x;
 	protected int y;
@@ -62,11 +62,11 @@ public class BlockGroup extends Group
 	public BlockGroup()
 	{
 		super("mdt.block.groupname");
-		add(name);
-		add(id);
-		add(unlocname);
-		add(metadata);
-		add(position);
+		//		add(name);
+		//		add(id);
+		//		add(unlocname);
+		//		add(metadata);
+		//		add(position);
 		add(icon);
 
 	}

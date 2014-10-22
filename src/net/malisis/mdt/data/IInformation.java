@@ -24,6 +24,7 @@
 
 package net.malisis.mdt.data;
 
+import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.mdt.gui.IInfoComponent;
 
@@ -39,5 +40,5 @@ public interface IInformation<T>
 
 	public void setValue(T value);
 
-	public <S extends UIComponent & IInfoComponent> S getComponent();
+	public <S extends UIComponent & IInfoComponent> S getComponent(MalisisGui gui);
 }

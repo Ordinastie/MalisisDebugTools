@@ -25,6 +25,7 @@
 package net.malisis.mdt.gui.component;
 
 import net.malisis.core.client.gui.GuiRenderer;
+import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.mdt.data.Group;
@@ -41,22 +42,23 @@ public class GroupContainer extends UIContainer
 {
 	private Group group;
 
-	public GroupContainer()
+	public GroupContainer(MalisisGui gui)
 	{
+		super(gui);
 		clipContent = false;
 	}
 
-	public void setDebugGroup(Group group)
+	public void setDebugGroup(MalisisGui gui, Group group)
 	{
 		this.group = group;
 		for (IInformation di : group)
 		{
-			UIComponent comp = di.getComponent();
+			UIComponent comp = di.getComponent(gui);
 			add(comp);
 		}
 	}
 
-	public int updateInfos()
+	public int updateInfos(MalisisGui gui)
 	{
 		if (group.isEmpty())
 		{
@@ -73,10 +75,13 @@ public class GroupContainer extends UIContainer
 		UIComponent comp;
 		for (IInformation di : group)
 		{
-			comp = di.getComponent();
-			comp.setPosition(0, h);
-			h += comp.getHeight();
-			((IInfoComponent) comp).updateInformation(di);
+			comp = di.getComponent(gui);
+			if (comp != null)
+			{
+				comp.setPosition(0, h);
+				h += comp.getHeight();
+				((IInfoComponent) comp).updateInformation(di);
+			}
 		}
 
 		setSize(UIComponent.INHERITED, h + 5);

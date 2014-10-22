@@ -50,6 +50,7 @@ public class DebugGui extends MalisisGui
 	private int currentHeight = 0;
 
 	private List<GroupContainer> groupContainers = new ArrayList();
+	private DebugWindow window;
 
 	public DebugGui()
 	{
@@ -57,7 +58,7 @@ public class DebugGui extends MalisisGui
 		guiscreenBackground = false;
 		renderer.setIgnoreScale(true);
 
-		DebugWindow window = new DebugWindow();
+		window = new DebugWindow(this);
 
 		addToScreen(window);
 		MinecraftForge.EVENT_BUS.register(this);
@@ -77,10 +78,10 @@ public class DebugGui extends MalisisGui
 	@Override
 	protected void mouseClicked(int x, int y, int button)
 	{
-		if (!container.isInsideBounds(x, y))
-			close();
-		else
+		if (getComponentAt(x, y) != null)
 			super.mouseClicked(x, y, button);
+		else
+			close();
 	}
 
 	@Override
@@ -112,14 +113,14 @@ public class DebugGui extends MalisisGui
 		boolean changed = dt.categoryChanged();
 		if (changed)
 		{
-			container.removeAll();
+			window.removeAll();
 			groupContainers.clear();
 			for (Group group : DebugTool.instance().listDebugGroups())
 			{
-				GroupContainer cont = new GroupContainer();
-				cont.setDebugGroup(group);
+				GroupContainer cont = new GroupContainer(this);
+				cont.setDebugGroup(this, group);
 				groupContainers.add(cont);
-				container.add(cont);
+				window.add(cont);
 			}
 		}
 
@@ -127,7 +128,7 @@ public class DebugGui extends MalisisGui
 		for (GroupContainer cont : groupContainers)
 		{
 			cont.setPosition(0, h);
-			h += cont.updateInfos();
+			h += cont.updateInfos(this);
 		}
 	}
 

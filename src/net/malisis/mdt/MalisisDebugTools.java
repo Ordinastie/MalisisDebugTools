@@ -28,6 +28,9 @@ import net.malisis.core.IMalisisMod;
 import net.malisis.core.MalisisCore;
 import net.malisis.core.configuration.Settings;
 import net.minecraftforge.client.ClientCommandHandler;
+
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -45,6 +48,7 @@ public class MalisisDebugTools implements IMalisisMod
 	public static final String version = "${version}";
 
 	public static MalisisDebugTools instance;
+	public static Logger log;
 
 	public MalisisDebugTools()
 	{
@@ -83,6 +87,7 @@ public class MalisisDebugTools implements IMalisisMod
 	public static void preInit(FMLPreInitializationEvent event)
 	{
 		new KeyBindings();
+		log = event.getModLog();
 	}
 
 	@EventHandler

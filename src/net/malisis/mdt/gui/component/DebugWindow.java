@@ -25,6 +25,7 @@
 package net.malisis.mdt.gui.component;
 
 import net.malisis.core.client.gui.GuiRenderer;
+import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.control.UICloseHandle;
 import net.malisis.core.client.gui.component.control.UIResizeHandle;
@@ -40,8 +41,9 @@ import org.lwjgl.opengl.GL11;
  */
 public class DebugWindow extends UIContainer<DebugWindow>
 {
-	public DebugWindow()
+	public DebugWindow(MalisisGui gui)
 	{
+		super(gui);
 		setSize(250, 500);
 		setPosition(50, 250);
 		setPadding(5, 5);
@@ -49,8 +51,8 @@ public class DebugWindow extends UIContainer<DebugWindow>
 		shape = new SimpleGuiShape();
 		rp = new RenderParameters();
 
-		new UIResizeHandle(this);
-		new UICloseHandle(this)
+		new UIResizeHandle(gui, this);
+		new UICloseHandle(gui, this)
 		{
 			@Override
 			public void onClose()

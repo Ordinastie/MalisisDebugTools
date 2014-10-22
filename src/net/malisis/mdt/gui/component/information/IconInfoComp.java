@@ -25,6 +25,7 @@
 package net.malisis.mdt.gui.component.information;
 
 import net.malisis.core.client.gui.Anchor;
+import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UIImage;
@@ -32,7 +33,6 @@ import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.event.ComponentEvent.HoveredStateChanged;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.IIcon;
 
 import com.google.common.eventbus.Subscribe;
@@ -48,20 +48,21 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	protected UIImage zoom;
 	protected int baseColor = 0xAAAAFF;
 
-	public IconInfoComp()
+	public IconInfoComp(MalisisGui gui)
 	{
-		label = new UILabel().setColor(baseColor);
+		super(gui);
+		label = new UILabel(gui).setColor(baseColor);
 		add(label);
 		UIImage img;
 		for (int i = 0; i < 6; i++)
 		{
-			img = new UIImage(null, TextureMap.locationBlocksTexture).setPosition(-18 * i, 0, Anchor.RIGHT);
+			img = new UIImage(gui, MalisisGui.BLOCK_TEXTURE, null).setPosition(-18 * i, 0, Anchor.RIGHT);
 			img.register(this);
 			add(img);
 			icons[i] = img;
 		}
 
-		zoom = new UIImage(null, TextureMap.locationBlocksTexture);
+		zoom = new UIImage(gui, MalisisGui.BLOCK_TEXTURE, null);
 		zoom.setPosition(0, 18, Anchor.RIGHT).setSize(64, 64).setZIndex(1).setVisible(false);
 		add(zoom);
 
