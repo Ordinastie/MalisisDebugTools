@@ -24,6 +24,7 @@
 
 package net.malisis.mdt;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,9 +32,15 @@ import net.malisis.core.MalisisCore;
 import net.minecraft.client.AnvilConverterException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiErrorScreen;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.SaveFormatComparator;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+
 import cpw.mods.fml.common.StartupQuery;
 
 /**
@@ -48,10 +55,34 @@ public class AutoWorldLoader
 	public AutoWorldLoader()
 	{
 		//only auto load in dev env
-		if (MalisisCore.isObfEnv)
+		if (MalisisCore.isObfEnv || GuiScreen.isCtrlKeyDown())
 			return;
+
+		setDisplay();
 		getSave();
 		loadWorld();
+	}
+
+	public void setDisplay()
+	{
+		try
+		{
+			int w = 1914;
+			int h = 1132;
+			Display.update();
+			DisplayMode dm = new DisplayMode(w, h);
+			Display.setDisplayMode(dm);
+			Display.setLocation(0, 0);
+
+			Method resize = Minecraft.class.getDeclaredMethod("resize", Integer.TYPE, Integer.TYPE);
+			resize.setAccessible(true);
+			resize.invoke(Minecraft.getMinecraft(), w, h);
+
+		}
+		catch (ReflectiveOperationException | LWJGLException e)
+		{
+			MalisisDebugTools.log.error("Failed to set resolution : ", e);
+		}
 	}
 
 	public void getSave()
@@ -63,10 +94,10 @@ public class AutoWorldLoader
 			Collections.sort(saves);
 			save = saves.get(0);
 		}
-		catch (AnvilConverterException anvilconverterexception)
+		catch (AnvilConverterException e)
 		{
-			MalisisCore.log.error("Couldn\'t load level list", anvilconverterexception);
-			this.mc.displayGuiScreen(new GuiErrorScreen("Unable to load worlds", anvilconverterexception.getMessage()));
+			MalisisCore.log.error("Couldn\'t load level list", e);
+			this.mc.displayGuiScreen(new GuiErrorScreen("Unable to load worlds", e.getMessage()));
 			return;
 		}
 	}
@@ -87,7 +118,7 @@ public class AutoWorldLoader
 		}
 		catch (StartupQuery.AbortedException e)
 		{
-			// ignore
+			MalisisDebugTools.log.error("Failed to load world : ", e);
 		}
 	}
 }

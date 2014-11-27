@@ -52,16 +52,15 @@ public class DebugWindow extends UIContainer<DebugWindow>
 		rp = new RenderParameters();
 
 		new UIResizeHandle(gui, this);
-		new UICloseHandle(gui, this)
-		{
-			@Override
-			public void onClose()
-			{
-				DebugTool.deactivate();
-			}
-		};
+		new UICloseHandle(gui, this);
 
 		clipContent = false;
+	}
+
+	@Override
+	public void onClose()
+	{
+		DebugTool.deactivate();
 	}
 
 	@Override

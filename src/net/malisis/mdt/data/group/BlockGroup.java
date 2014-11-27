@@ -62,11 +62,11 @@ public class BlockGroup extends Group
 	public BlockGroup()
 	{
 		super("mdt.block.groupname");
-		//		add(name);
-		//		add(id);
-		//		add(unlocname);
-		//		add(metadata);
-		//		add(position);
+		add(name);
+		add(id);
+		add(unlocname);
+		add(metadata);
+		add(position);
 		add(icon);
 
 	}

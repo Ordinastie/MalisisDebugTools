@@ -30,7 +30,7 @@ import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UIImage;
 import net.malisis.core.client.gui.component.decoration.UILabel;
-import net.malisis.core.client.gui.event.ComponentEvent.HoveredStateChanged;
+import net.malisis.core.client.gui.event.component.StateChangeEvent.HoveredStateChange;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
 import net.minecraft.util.IIcon;
@@ -91,7 +91,7 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	}
 
 	@Subscribe
-	public void hoveredStateChanged(HoveredStateChanged<UIImage> event)
+	public void hoveredStateChanged(HoveredStateChange<UIImage> event)
 	{
 		if (!(event.getComponent() instanceof UIImage))
 			return;
