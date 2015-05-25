@@ -31,6 +31,7 @@ import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UIImage;
 import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.event.component.StateChangeEvent.HoveredStateChange;
+import net.malisis.core.renderer.font.FontRenderOptions;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
 import net.minecraft.util.IIcon;
@@ -47,11 +48,14 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	protected UIImage[] icons = new UIImage[6];
 	protected UIImage zoom;
 	protected int baseColor = 0xAAAAFF;
+	protected FontRenderOptions fro;
 
 	public IconInfoComp(MalisisGui gui)
 	{
 		super(gui);
-		label = new UILabel(gui).setColor(baseColor);
+		fro = new FontRenderOptions();
+		fro.color = baseColor;
+		label = new UILabel(gui).setFont(null, fro);
 		add(label);
 		UIImage img;
 		for (int i = 0; i < 6; i++)

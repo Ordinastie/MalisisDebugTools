@@ -58,10 +58,14 @@ public class DebugGui extends MalisisGui
 		guiscreenBackground = false;
 		renderer.setIgnoreScale(true);
 
-		window = new DebugWindow(this);
-
-		addToScreen(window);
 		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@Override
+	public void construct()
+	{
+		window = new DebugWindow(this);
+		addToScreen(window);
 	}
 
 	@Override
@@ -90,6 +94,12 @@ public class DebugGui extends MalisisGui
 		if (mc.currentScreen != null && !(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof DebugGui))
 			return;
 
+		if (!constructed)
+		{
+			construct();
+			constructed = true;
+		}
+
 		updateDebugWindow();
 
 		renderer.enableBlending();
@@ -104,6 +114,13 @@ public class DebugGui extends MalisisGui
 		//close GuiScreen (RenderGameOverlayEvent takes over)
 		if (keyCode == KeyBindings.kbToggleMouse.getKeyCode())
 			close();
+	}
+
+	@Override
+	public void close()
+	{
+		setHoveredComponent(null, true);
+		super.close();
 	}
 
 	private void updateDebugWindow()

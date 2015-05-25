@@ -25,11 +25,11 @@
 package net.malisis.mdt.gui.component.information;
 
 import net.malisis.core.client.gui.Anchor;
-import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UILabel;
+import net.malisis.core.renderer.font.FontRenderOptions;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
 
@@ -42,16 +42,19 @@ public class DefaultInfoComp<T extends IInformation> extends UIContainer<Default
 	protected UILabel label;
 	protected UILabel value;
 	protected int baseColor = 0xAAAAFF;
+	protected FontRenderOptions fro;
 
 	public DefaultInfoComp(MalisisGui gui)
 	{
 		super(gui);
-		label = new UILabel(gui).setColor(baseColor);
-		value = new UILabel(gui).setColor(baseColor).setAnchor(Anchor.RIGHT);
+		fro = new FontRenderOptions();
+		fro.color = baseColor;
+		label = new UILabel(gui).setFont(null, fro);
+		value = new UILabel(gui).setFont(null, fro).setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 
-		setSize(UIComponent.INHERITED, GuiRenderer.FONT_HEIGHT + 2);
+		setSize(UIComponent.INHERITED, (int) (gui.getFont().getStringHeight() + 2));
 	}
 
 	@Override
@@ -61,7 +64,7 @@ public class DefaultInfoComp<T extends IInformation> extends UIContainer<Default
 			return;
 
 		label.setText(info.getLabel());
-		value.setColor(baseColor);
+		fro.color = baseColor;
 
 		Object v = info.getValue();
 		if (v == null)
@@ -71,7 +74,7 @@ public class DefaultInfoComp<T extends IInformation> extends UIContainer<Default
 		}
 
 		if (v instanceof Boolean)
-			value.setColor((boolean) v ? 0x33AA33 : 0x993333);
+			fro.color = ((boolean) v ? 0x33AA33 : 0x993333);
 		value.setText(v.toString());
 	}
 }

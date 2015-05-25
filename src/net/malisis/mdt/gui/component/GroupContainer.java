@@ -28,6 +28,7 @@ import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
+import net.malisis.core.renderer.font.FontRenderOptions;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
@@ -41,11 +42,15 @@ import org.lwjgl.opengl.GL11;
 public class GroupContainer extends UIContainer
 {
 	private Group group;
+	private FontRenderOptions fro;
 
 	public GroupContainer(MalisisGui gui)
 	{
 		super(gui);
 		clipContent = false;
+		fro = new FontRenderOptions();
+		fro.color = 0xFFFFFF;
+		fro.shadow = true;
 	}
 
 	public void setDebugGroup(MalisisGui gui, Group group)
@@ -91,8 +96,8 @@ public class GroupContainer extends UIContainer
 	@Override
 	public void drawBackground(GuiRenderer renderer, int mouseX, int mouseY, float partialTick)
 	{
-		renderer.setFontScale(2);
-		renderer.drawText(group.getName(), 5, 0, 0xFFFFFF, true);
+		fro.fontScale = 2;
+		renderer.drawText(null, group.getName(), 5, 0, 0, fro);
 
 		renderer.next(GL11.GL_QUADS);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -102,6 +107,5 @@ public class GroupContainer extends UIContainer
 		renderer.drawShape(shape, rp);
 		renderer.next();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		renderer.setFontScale(1);
 	}
 }
