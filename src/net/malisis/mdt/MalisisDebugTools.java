@@ -40,7 +40,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
  * @author Ordinastie
  *
  */
-@Mod(modid = MalisisDebugTools.modid, name = MalisisDebugTools.modname, version = MalisisDebugTools.version)
+@Mod(modid = MalisisDebugTools.modid, name = MalisisDebugTools.modname, version = MalisisDebugTools.version, dependencies = "required-after:malisiscore")
 public class MalisisDebugTools implements IMalisisMod
 {
 	public static final String modid = "mdt";
