@@ -57,6 +57,9 @@ public class AutoWorldLoader
 		//only auto load in dev env
 		if (MalisisCore.isObfEnv || GuiScreen.isCtrlKeyDown())
 			return;
+		boolean b = false;
+		if (b)
+			return;
 
 		setDisplay();
 		getSave();
