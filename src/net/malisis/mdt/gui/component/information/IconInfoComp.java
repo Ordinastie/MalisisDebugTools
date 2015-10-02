@@ -32,9 +32,9 @@ import net.malisis.core.client.gui.component.decoration.UIImage;
 import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.event.component.StateChangeEvent.HoveredStateChange;
 import net.malisis.core.renderer.font.FontRenderOptions;
+import net.malisis.core.renderer.icon.MalisisIcon;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
-import net.minecraft.util.IIcon;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -42,7 +42,7 @@ import com.google.common.eventbus.Subscribe;
  * @author Ordinastie
  *
  */
-public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComponent<IInformation<IIcon[]>>
+public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComponent<IInformation<MalisisIcon[]>>
 {
 	protected UILabel label;
 	protected UIImage[] icons = new UIImage[6];
@@ -55,7 +55,7 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 		super(gui);
 		fro = new FontRenderOptions();
 		fro.color = baseColor;
-		label = new UILabel(gui).setFont(null, fro);
+		label = new UILabel(gui).setFontRenderOptions(fro);
 		add(label);
 		UIImage img;
 		for (int i = 0; i < 6; i++)
@@ -75,13 +75,13 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	}
 
 	@Override
-	public void updateInformation(IInformation<IIcon[]> info)
+	public void updateInformation(IInformation<MalisisIcon[]> info)
 	{
 		if (info == null)
 			return;
 
 		label.setText(info.getLabel());
-		IIcon[] infoIcons = info.getValue();
+		MalisisIcon[] infoIcons = info.getValue();
 		for (int i = 0; i < 6; i++)
 		{
 			if (i < infoIcons.length)

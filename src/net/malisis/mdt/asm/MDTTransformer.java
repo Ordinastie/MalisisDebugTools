@@ -57,7 +57,7 @@ public class MDTTransformer extends MalisisClassTransformer
 		//INVOKESPECIAL AutoWorldLoader.<init> () : void
 		InsnList insert = new InsnList();
 		insert.add(new TypeInsnNode(NEW, "net/malisis/mdt/AutoWorldLoader"));
-		insert.add(new MethodInsnNode(INVOKESPECIAL, "net/malisis/mdt/AutoWorldLoader", "<init>", "()V"));
+		insert.add(new MethodInsnNode(INVOKESPECIAL, "net/malisis/mdt/AutoWorldLoader", "<init>", "()V", false));
 
 		ah.jumpToEnd().jump(-2).insert(insert);
 

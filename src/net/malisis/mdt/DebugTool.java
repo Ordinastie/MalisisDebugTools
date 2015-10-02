@@ -27,16 +27,14 @@ package net.malisis.mdt;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.category.BlockCaterogy;
 import net.malisis.mdt.data.category.ItemCategory;
 import net.malisis.mdt.gui.DebugGui;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -47,10 +45,10 @@ import org.lwjgl.opengl.Display;
  */
 public class DebugTool
 {
-	private static DebugTool instance;
+	private static DebugTool instance = new DebugTool();
 	public static Minecraft mc = Minecraft.getMinecraft();
 	public static World world = mc.theWorld;
-	public static EntityClientPlayerMP player = mc.thePlayer;
+	public static EntityPlayerSP player = mc.thePlayer;
 	private DebugGui debugGui;
 
 	private List<ICategory> debugCategories = new ArrayList<>();
@@ -64,6 +62,8 @@ public class DebugTool
 
 	private DebugTool()
 	{
+		debugGui = new DebugGui();
+
 		ICategory cat = new BlockCaterogy();
 		registerCategory(cat);
 		registerCategory(new ItemCategory());
@@ -82,27 +82,37 @@ public class DebugTool
 		return false;
 	}
 
+	//	private void setActive(boolean active)
+	//	{
+	//		if (active)
+	//		{
+	//			if (debugGui != null)
+	//				MinecraftForge.EVENT_BUS.unregister(debugGui);
+	//			debugGui = new DebugGui();
+	//			MinecraftForge.EVENT_BUS.register(debugGui);
+	//			categoryChanged = true;
+	//		}
+	//		else
+	//		{
+	//			if (debugGui != null)
+	//			{
+	//				MinecraftForge.EVENT_BUS.unregister(debugGui);
+	//				if (MalisisGui.currentGui() == debugGui)
+	//					debugGui.close();
+	//				debugGui = null;
+	//				mc.mouseHelper.grabMouseCursor();
+	//			}
+	//		}
+	//		this.active = active;
+	//	}
+
 	private void setActive(boolean active)
 	{
 		if (active)
-		{
-			if (debugGui != null)
-				MinecraftForge.EVENT_BUS.unregister(debugGui);
-			debugGui = new DebugGui();
-			MinecraftForge.EVENT_BUS.register(debugGui);
-			categoryChanged = true;
-		}
+			debugGui.displayOverlay();
 		else
-		{
-			if (debugGui != null)
-			{
-				MinecraftForge.EVENT_BUS.unregister(debugGui);
-				if (MalisisGui.currentGui() == debugGui)
-					debugGui.close();
-				debugGui = null;
-				mc.mouseHelper.grabMouseCursor();
-			}
-		}
+			debugGui.closeOverlay();
+
 		this.active = active;
 	}
 
@@ -137,55 +147,64 @@ public class DebugTool
 		return debugCategories;
 	}
 
+	//	public void toggleMouseControl()
+	//	{
+	//		if (Mouse.isGrabbed() && mc.currentScreen == null)
+	//		{
+	//			if (!active)
+	//			{
+	//				setActive(true);
+	//				return;
+	//			}
+	//			mc.displayGuiScreen(debugGui);
+	//			Mouse.setCursorPosition(mouseLastPosX, mouseLastPosY);
+	//		}
+	//		else if (!Mouse.isGrabbed())
+	//		{
+	//			mouseLastPosX = Mouse.getX();
+	//			mouseLastPosY = Mouse.getY();
+	//			MalisisGui.setHoveredComponent(null, false);
+	//			mc.displayGuiScreen(null);
+	//		}
+	//
+	//	}
+
 	public void toggleMouseControl()
 	{
-		if (Mouse.isGrabbed() && mc.currentScreen == null)
+		if (!active)
+			setActive(true);
+		else
 		{
-			if (!active)
-			{
-				setActive(true);
-				return;
-			}
-			mc.displayGuiScreen(debugGui);
+			debugGui.display();
 			Mouse.setCursorPosition(mouseLastPosX, mouseLastPosY);
 		}
-		else if (!Mouse.isGrabbed())
-		{
-			mouseLastPosX = Mouse.getX();
-			mouseLastPosY = Mouse.getY();
-			MalisisGui.setHoveredComponent(null, false);
-			mc.displayGuiScreen(null);
-		}
-
 	}
 
-	public static DebugTool instance()
+	public static DebugTool get()
 	{
-		if (instance == null)
-			instance = new DebugTool();
 		return instance;
 	}
 
 	public static void toggle()
 	{
-		instance().setActive(!instance.active);
+		instance.setActive(!instance.active);
 	}
 
 	public static void activate()
 	{
-		instance().setActive(true);
+		instance.setActive(true);
 	}
 
 	public static void deactivate()
 	{
-		instance().setActive(false);
+		instance.setActive(false);
 	}
 
 	public static void reset()
 	{
-		instance().setActive(false);
-		instance = null;
-		instance().setActive(true);
+		instance.setActive(false);
+		instance = new DebugTool();
+		instance.setActive(true);
 
 	}
 

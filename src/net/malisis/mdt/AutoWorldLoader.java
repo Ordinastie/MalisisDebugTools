@@ -36,12 +36,11 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.SaveFormatComparator;
+import net.minecraftforge.fml.common.StartupQuery;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-
-import cpw.mods.fml.common.StartupQuery;
 
 /**
  * @author Ordinastie
@@ -71,7 +70,7 @@ public class AutoWorldLoader
 		try
 		{
 			int w = 1914;
-			int h = 1132;
+			int h = 1010;
 			Display.update();
 			DisplayMode dm = new DisplayMode(w, h);
 			Display.setDisplayMode(dm);

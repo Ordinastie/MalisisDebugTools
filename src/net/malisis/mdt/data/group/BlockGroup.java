@@ -24,17 +24,15 @@
 
 package net.malisis.mdt.data.group;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import net.malisis.core.renderer.icon.MalisisIcon;
+import net.malisis.core.util.MBlockState;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.information.DefaultInformation;
 import net.malisis.mdt.gui.component.information.IconInfoComp;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
@@ -49,15 +47,10 @@ public class BlockGroup extends Group
 	protected DefaultInformation<String> unlocname = new DefaultInformation("mdt.block.unlocname");
 	protected DefaultInformation<Integer> metadata = new DefaultInformation("mdt.block.metadata");
 	protected DefaultInformation<String> position = new DefaultInformation("mdt.block.position");
-	protected DefaultInformation<IIcon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
+	protected DefaultInformation<MalisisIcon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
 
-	protected int x;
-	protected int y;
-	protected int z;
-
-	protected int lastX = 0;
-	protected int lastY = 999;
-	protected int lastZ = 0;
+	protected BlockPos pos;
+	protected BlockPos lastPos = new BlockPos(0, 999, 0);
 
 	public BlockGroup()
 	{
@@ -78,31 +71,25 @@ public class BlockGroup extends Group
 		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
 			return false;
 
-		x = mop.blockX;
-		y = mop.blockY;
-		z = mop.blockZ;
-
-		if (x == lastX && y == lastY && z == lastZ)
+		pos = mop.getBlockPos();
+		if (lastPos.equals(pos))
 			return false;
 
-		lastX = x;
-		lastY = y;
-		lastZ = z;
+		lastPos = pos;
 
-		Block block = DebugTool.world.getBlock(x, y, z);
-		int meta = DebugTool.world.getBlockMetadata(x, y, z);
-		ItemStack is = block.getPickBlock(mop, DebugTool.world, x, y, z);
+		MBlockState mstate = new MBlockState(DebugTool.world, pos);
+		ItemStack is = mstate.getBlock().getPickBlock(mop, DebugTool.world, pos, DebugTool.player);
 
 		name.setValue(is.getDisplayName());
-		unlocname.setValue(block.getUnlocalizedName());
-		metadata.setValue(meta);
-		position.setValue("[" + x + ", " + y + ", " + z + "]");
+		unlocname.setValue(mstate.getBlock().getUnlocalizedName());
+		metadata.setValue(mstate.getBlock().getMetaFromState(mstate.getBlockState()));
+		position.setValue("[" + mstate.getX() + ", " + mstate.getY() + ", " + mstate.getZ() + "]");
 
-		Set<IIcon> icons = new HashSet<>();
-		for (int i = 0; i < 6; i++)
-			icons.add(block.getIcon(DebugTool.world, x, y, z, i));
-
-		icon.setValue(icons.toArray(new IIcon[0]));
+		//		Set<MalisisIcon> icons = new HashSet<>();
+		//		for (int i = 0; i < 6; i++)
+		//			icons.add(block.getIcon(DebugTool.world, x, y, z, i));
+		//
+		icon.setValue(new MalisisIcon[0]);
 
 		empty = false;
 		return true;

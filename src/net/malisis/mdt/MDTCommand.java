@@ -30,8 +30,10 @@ import java.util.Set;
 
 import net.malisis.core.MalisisCore;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.BlockPos;
 
 /**
  * @author Ordinastie
@@ -62,7 +64,7 @@ public class MDTCommand extends CommandBase
 	}
 
 	@Override
-	public void processCommand(ICommandSender sender, String[] params)
+	public void processCommand(ICommandSender sender, String[] params) throws CommandException
 	{
 		if (params.length == 0)
 			throw new WrongUsageException("mdt.commands.usage", new Object[0]);
@@ -98,10 +100,10 @@ public class MDTCommand extends CommandBase
 	}
 
 	@Override
-	public List addTabCompletionOptions(ICommandSender icommandsender, String[] params)
+	public List addTabCompletionOptions(ICommandSender icommandsender, String[] params, BlockPos pos)
 	{
 		if (params.length == 1)
-			return getListOfStringsFromIterableMatchingLastWord(params, parameters);
+			return getListOfStringsMatchingLastWord(params, parameters);
 		else
 			return null;
 	}

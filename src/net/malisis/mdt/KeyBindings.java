@@ -26,10 +26,10 @@ package net.malisis.mdt;
 
 import static org.lwjgl.input.Keyboard.*;
 import net.minecraft.client.settings.KeyBinding;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 
 /**
  * @author Ordinastie
@@ -49,6 +49,6 @@ public class KeyBindings
 	public void onKeyInput(InputEvent.KeyInputEvent event)
 	{
 		if (kbToggleMouse.isPressed())
-			DebugTool.instance().toggleMouseControl();
+			DebugTool.get().toggleMouseControl();
 	}
 }

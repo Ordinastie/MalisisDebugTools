@@ -24,13 +24,14 @@
 
 package net.malisis.mdt.data.group;
 
-import net.malisis.core.inventory.IInventoryProvider;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.information.DefaultInformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
@@ -45,13 +46,8 @@ public class TileEntityGroup extends Group
 	private DefaultInformation<Boolean> inventory = new DefaultInformation<>("mdt.te.inventory");
 	private DefaultInformation<String> nbt = new DefaultInformation<>("mdt.te.nbt");
 
-	protected int x;
-	protected int y;
-	protected int z;
-
-	protected int lastX = 0;
-	protected int lastY = 999;
-	protected int lastZ = 0;
+	protected BlockPos pos;
+	protected BlockPos lastPos = new BlockPos(0, 999, 0);
 
 	public TileEntityGroup()
 	{
@@ -69,18 +65,13 @@ public class TileEntityGroup extends Group
 		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
 			return false;
 
-		x = mop.blockX;
-		y = mop.blockY;
-		z = mop.blockZ;
-
-		if (x == lastX && y == lastY && z == lastZ)
+		pos = mop.getBlockPos();
+		if (lastPos.equals(pos))
 			return false;
 
-		lastX = x;
-		lastY = y;
-		lastZ = z;
+		lastPos = pos;
 
-		TileEntity te = DebugTool.world.getTileEntity(x, y, z);
+		TileEntity te = DebugTool.world.getTileEntity(pos);
 		if (te == null)
 		{
 			clear();
@@ -88,8 +79,8 @@ public class TileEntityGroup extends Group
 		}
 
 		type.setValue(te.getClass().getSimpleName());
-		update.setValue(te.canUpdate());
-		inventory.setValue(te instanceof IInventory || te instanceof IInventoryProvider);
+		update.setValue(te instanceof IUpdatePlayerListBox);
+		inventory.setValue(te instanceof IInventory);
 		nbt.setValue("NBT");
 
 		empty = false;
