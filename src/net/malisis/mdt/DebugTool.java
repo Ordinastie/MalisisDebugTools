@@ -36,7 +36,6 @@ import net.malisis.mdt.gui.DebugGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -87,18 +86,16 @@ public class DebugTool
 		if (active)
 		{
 			if (debugGui != null)
-				MinecraftForge.EVENT_BUS.unregister(debugGui);
+				debugGui.closeOverlay();
 			debugGui = new DebugGui();
-			MinecraftForge.EVENT_BUS.register(debugGui);
+			debugGui.displayOverlay();
 			categoryChanged = true;
 		}
 		else
 		{
 			if (debugGui != null)
 			{
-				MinecraftForge.EVENT_BUS.unregister(debugGui);
-				if (MalisisGui.currentGui() == debugGui)
-					debugGui.close();
+				debugGui.closeOverlay();
 				debugGui = null;
 				mc.mouseHelper.grabMouseCursor();
 			}

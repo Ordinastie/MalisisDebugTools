@@ -27,17 +27,15 @@ package net.malisis.mdt.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.malisis.core.MalisisCore;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.KeyBindings;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.gui.component.DebugWindow;
 import net.malisis.mdt.gui.component.GroupContainer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import org.lwjgl.input.Keyboard;
 
 /**
  * @author Ordinastie
@@ -45,20 +43,14 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
  */
 public class DebugGui extends MalisisGui
 {
-	private static DebugGui instance;
-	private int currentWidth = 0;
-	private int currentHeight = 0;
 
 	private List<GroupContainer> groupContainers = new ArrayList();
 	private DebugWindow window;
 
 	public DebugGui()
 	{
-		instance = this;
 		guiscreenBackground = false;
 		renderer.setIgnoreScale(true);
-
-		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override
@@ -66,17 +58,7 @@ public class DebugGui extends MalisisGui
 	{
 		window = new DebugWindow(this);
 		addToScreen(window);
-	}
-
-	@Override
-	public void setWorldAndResolution(Minecraft minecraft, int width, int height)
-	{
-		if (width == currentWidth && height == currentHeight)
-			return;
-
-		currentWidth = width;
-		currentHeight = height;
-		super.setWorldAndResolution(minecraft, width, height);
+		MalisisCore.message("Constructed");
 	}
 
 	@Override
@@ -89,27 +71,13 @@ public class DebugGui extends MalisisGui
 	}
 
 	@Override
-	public void drawScreen(int mouseX, int mouseY, float partialTicks)
-	{
-		if (mc.currentScreen != null && !(mc.currentScreen instanceof GuiChat) && !(mc.currentScreen instanceof DebugGui))
-			return;
-
-		if (!constructed)
-		{
-			construct();
-			constructed = true;
-		}
-
-		updateDebugWindow();
-
-		renderer.enableBlending();
-		super.drawScreen(mouseX, mouseY, partialTicks);
-
-	}
-
-	@Override
 	protected void keyTyped(char keyChar, int keyCode)
 	{
+		if (keyCode == Keyboard.KEY_R && isCtrlKeyDown())
+		{
+			DebugTool.reset();
+			return;
+		}
 		super.keyTyped(keyChar, keyCode);
 		//close GuiScreen (RenderGameOverlayEvent takes over)
 		if (keyCode == KeyBindings.kbToggleMouse.getKeyCode())
@@ -117,13 +85,7 @@ public class DebugGui extends MalisisGui
 	}
 
 	@Override
-	public void close()
-	{
-		setHoveredComponent(null, true);
-		super.close();
-	}
-
-	private void updateDebugWindow()
+	public void update(int mouseX, int mouseY, float partialTick)
 	{
 		DebugTool dt = DebugTool.instance();
 		dt.updateInformations();
@@ -148,15 +110,4 @@ public class DebugGui extends MalisisGui
 			h += cont.updateInfos(this);
 		}
 	}
-
-	@SubscribeEvent
-	public void renderDebugWindow(RenderGameOverlayEvent.Post event)
-	{
-		if (event.type != RenderGameOverlayEvent.ElementType.ALL || Minecraft.getMinecraft().currentScreen instanceof DebugGui)
-			return;
-
-		instance.setWorldAndResolution(Minecraft.getMinecraft(), event.resolution.getScaledWidth(), event.resolution.getScaledHeight());
-		instance.drawScreen(event.mouseX, event.mouseY, event.partialTicks);
-	}
-
 }
