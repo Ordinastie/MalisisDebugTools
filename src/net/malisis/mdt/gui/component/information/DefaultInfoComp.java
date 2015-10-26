@@ -49,12 +49,12 @@ public class DefaultInfoComp<T extends IInformation> extends UIContainer<Default
 		super(gui);
 		fro = new FontRenderOptions();
 		fro.color = baseColor;
-		label = new UILabel(gui).setFont(null, fro);
-		value = new UILabel(gui).setFont(null, fro).setAnchor(Anchor.RIGHT);
+		label = new UILabel(gui).setFontRenderOptions(fro);
+		value = new UILabel(gui).setFontRenderOptions(fro).setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 
-		setSize(UIComponent.INHERITED, (int) (gui.getFont().getStringHeight() + 2));
+		setSize(UIComponent.INHERITED, label.getHeight() + 2);
 	}
 
 	@Override

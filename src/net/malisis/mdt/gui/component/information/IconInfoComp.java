@@ -55,7 +55,7 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 		super(gui);
 		fro = new FontRenderOptions();
 		fro.color = baseColor;
-		label = new UILabel(gui).setFont(null, fro);
+		label = new UILabel(gui).setFontRenderOptions(fro);
 		add(label);
 		UIImage img;
 		for (int i = 0; i < 6; i++)
