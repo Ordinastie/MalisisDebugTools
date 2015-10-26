@@ -70,7 +70,7 @@ public class AutoWorldLoader
 		try
 		{
 			int w = 1914;
-			int h = 1010;
+			int h = 1012;
 			Display.update();
 			DisplayMode dm = new DisplayMode(w, h);
 			Display.setDisplayMode(dm);
