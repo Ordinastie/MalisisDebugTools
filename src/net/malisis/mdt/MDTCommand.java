@@ -49,6 +49,7 @@ public class MDTCommand extends CommandBase
 		parameters.add("activate");
 		parameters.add("deactivate");
 		parameters.add("reset");
+		parameters.add("texture");
 	}
 
 	@Override
@@ -85,6 +86,9 @@ public class MDTCommand extends CommandBase
 				break;
 			case "reset":
 				DebugTool.reset();
+				break;
+			case "texture":
+				new MDTTextureGui().display(true);
 				break;
 			default:
 				MalisisCore.message("Not yet implemented");
