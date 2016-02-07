@@ -22,69 +22,40 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.renderer;
+package net.malisis.mdt.block;
 
-import net.malisis.core.renderer.MalisisRenderer;
-import net.malisis.core.renderer.RenderParameters;
-import net.malisis.core.renderer.element.Shape;
-import net.malisis.core.renderer.element.shape.Cube;
-import net.malisis.core.util.modmessage.ModMessage;
+import net.malisis.core.block.BoundingBoxType;
+import net.malisis.core.block.MalisisBlock;
+import net.malisis.core.util.AABBUtils;
+import net.malisis.mdt.MalisisDebugTools;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Ordinastie
  *
  */
-public class AABBRenderer extends MalisisRenderer
+public class MdtBlock extends MalisisBlock
 {
-	private static AABBRenderer instance;
+	public static boolean invisible = false;
 
-	private AxisAlignedBB aabb;
-	private int color;
-	private int delay;
-	private Shape cube = new Cube();
-	private RenderParameters rp = new RenderParameters();
-
-	public AABBRenderer()
+	public MdtBlock()
 	{
-		registerForRenderWorldLast();
-		instance = this;
+		super(Material.ground);
+		setCreativeTab(CreativeTabs.tabBlock);
+		setName("blockMDT");
+		setTexture(MalisisDebugTools.modid + ":blocks/blockMdt");
 	}
 
 	@Override
-	protected void initialize()
+	public AxisAlignedBB getBoundingBox(IBlockAccess world, BlockPos pos, BoundingBoxType type)
 	{
-		delay = delay++;
-	}
+		if (type == BoundingBoxType.RAYTRACE || type == BoundingBoxType.SELECTION || world == null)
+			return AABBUtils.identity();
 
-	@Override
-	public boolean shouldRender(RenderWorldLastEvent event, IBlockAccess world)
-	{
-		return aabb != null;
-	}
-
-	@Override
-	public void render()
-	{
-		next(GL11.GL_LINE_STRIP);
-		disableTextures();
-		cube.resetState();
-
-		cube.setBounds(aabb);
-
-		rp.colorMultiplier.set(color);
-		drawShape(cube, rp);
-	}
-
-	@ModMessage("renderAABB")
-	public static void set(AxisAlignedBB aabb, int color, int delay)
-	{
-		instance.aabb = aabb;
-		instance.color = color;
-		instance.delay = delay;
+		return invisible ? null : AABBUtils.identity();
 	}
 }

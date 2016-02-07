@@ -28,6 +28,7 @@ import net.malisis.core.IMalisisMod;
 import net.malisis.core.MalisisCore;
 import net.malisis.core.configuration.Settings;
 import net.malisis.core.util.modmessage.ModMessageManager;
+import net.malisis.mdt.block.MdtBlock;
 import net.malisis.mdt.renderer.AABBRenderer;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -87,6 +88,7 @@ public class MalisisDebugTools implements IMalisisMod
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event)
 	{
+		new MdtBlock().register();
 		new KeyBindings();
 		log = event.getModLog();
 		ModMessageManager.register(instance, new MdtModMessage());

@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import net.malisis.core.MalisisCore;
+import net.malisis.mdt.block.MdtBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -50,6 +52,7 @@ public class MDTCommand extends CommandBase
 		parameters.add("deactivate");
 		parameters.add("reset");
 		parameters.add("texture");
+		parameters.add("invisBlock");
 	}
 
 	@Override
@@ -89,6 +92,10 @@ public class MDTCommand extends CommandBase
 				break;
 			case "texture":
 				new MDTTextureGui().display(true);
+				break;
+			case "invisBlock":
+				MdtBlock.invisible = !MdtBlock.invisible;
+				Minecraft.getMinecraft().renderGlobal.loadRenderers();
 				break;
 			default:
 				MalisisCore.message("Not yet implemented");
