@@ -70,7 +70,7 @@ public class AABBRenderer extends MalisisRenderer
 	@Override
 	public void render()
 	{
-		next(GL11.GL_LINE_STRIP);
+		next(GL11.GL_LINE_LOOP);
 		disableTextures();
 		cube.resetState();
 
