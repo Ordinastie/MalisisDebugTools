@@ -67,9 +67,19 @@ public class MDTTextureGui extends MalisisGui
 			if (size == -1)
 				size = Display.getHeight() / getGui().getRenderer().getScaleFactor();
 
+			renderer.disableTextures();
+			shape.resetState();
+			shape.setSize((int) (size * factor), (int) (size * factor));
+			//shape.setSize(150, 150);
+			shape.setPosition(px, py);
+			renderer.drawShape(shape, rp);
+			renderer.next();
+			renderer.enableTextures();
+
 			renderer.bindTexture(BLOCK_TEXTURE);
 			shape.resetState();
 			shape.setSize((int) (size * factor), (int) (size * factor));
+			//shape.setSize(150, 150);
 			shape.setPosition(px, py);
 			renderer.drawShape(shape, rp);
 
