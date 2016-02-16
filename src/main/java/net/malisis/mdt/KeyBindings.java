@@ -26,8 +26,8 @@ package net.malisis.mdt;
 
 import static org.lwjgl.input.Keyboard.*;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 
@@ -41,7 +41,7 @@ public class KeyBindings
 
 	public KeyBindings()
 	{
-		FMLCommonHandler.instance().bus().register(this);
+		MinecraftForge.EVENT_BUS.register(this);
 		ClientRegistry.registerKeyBinding(kbToggleMouse);
 	}
 

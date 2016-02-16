@@ -31,6 +31,7 @@ import net.malisis.core.renderer.font.FontRenderOptions;
 import net.malisis.core.util.MouseButton;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author Ordinastie
@@ -50,10 +51,14 @@ public class MDTTextureGui extends MalisisGui
 		private float factor = 1;
 		private int px = 0;
 		private int py = 0;
+		private float atlasWidth = 1;
+		private float atlasHeight = 1;
 
 		public TextureDebug(MalisisGui gui)
 		{
 			super(gui);
+			atlasWidth = -1;
+			atlasHeight = -1;
 
 		}
 
@@ -67,9 +72,19 @@ public class MDTTextureGui extends MalisisGui
 			if (size == -1)
 				size = Display.getHeight() / getGui().getRenderer().getScaleFactor();
 
+			if (atlasWidth == -1)
+			{
+				renderer.bindTexture(BLOCK_TEXTURE);
+
+				atlasWidth = GL11.glGetTexLevelParameteri(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_WIDTH);
+				atlasHeight = GL11.glGetTexLevelParameterf(GL11.GL_TEXTURE_2D, 0, GL11.GL_TEXTURE_HEIGHT);
+			}
+
+			float atlasFactor = atlasWidth / atlasHeight;
+
 			renderer.disableTextures();
 			shape.resetState();
-			shape.setSize((int) (size * factor), (int) (size * factor));
+			shape.setSize((int) (size * factor * atlasFactor), (int) (size * factor));
 			//shape.setSize(150, 150);
 			shape.setPosition(px, py);
 			renderer.drawShape(shape, rp);
@@ -78,7 +93,7 @@ public class MDTTextureGui extends MalisisGui
 
 			renderer.bindTexture(BLOCK_TEXTURE);
 			shape.resetState();
-			shape.setSize((int) (size * factor), (int) (size * factor));
+			shape.setSize((int) (size * factor * atlasFactor), (int) (size * factor));
 			//shape.setSize(150, 150);
 			shape.setPosition(px, py);
 			renderer.drawShape(shape, rp);
@@ -90,8 +105,9 @@ public class MDTTextureGui extends MalisisGui
 			float u = (mouseX - px) / 1024F * getGui().getRenderer().getScaleFactor() / factor;
 			float v = (mouseY - py) / 1024F * getGui().getRenderer().getScaleFactor() / factor;
 
-			renderer.drawText(null, "U : " + u, 10, 10, 0, fro);
-			renderer.drawText(null, "V : " + v, 10, 20, 0, fro);
+			renderer.drawText(null, "Atlas : " + atlasWidth + "x" + atlasHeight, 10, 10, 0, fro);
+			renderer.drawText(null, "U : " + u, 10, 20, 0, fro);
+			renderer.drawText(null, "V : " + v, 10, 30, 0, fro);
 		}
 
 		@Override
@@ -113,6 +129,15 @@ public class MDTTextureGui extends MalisisGui
 
 			px += x - lastX;
 			py += y - lastY;
+
+			return true;
+		}
+
+		@Override
+		public boolean onButtonRelease(int x, int y, MouseButton button)
+		{
+			if (button == MouseButton.MIDDLE)
+				factor = 1;
 
 			return true;
 		}
