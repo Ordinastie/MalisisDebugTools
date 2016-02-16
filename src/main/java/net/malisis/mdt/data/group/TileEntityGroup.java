@@ -28,8 +28,8 @@ import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.information.DefaultInformation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -79,7 +79,7 @@ public class TileEntityGroup extends Group
 		}
 
 		type.setValue(te.getClass().getSimpleName());
-		update.setValue(te instanceof IUpdatePlayerListBox);
+		update.setValue(te instanceof ITickable);
 		inventory.setValue(te instanceof IInventory);
 		nbt.setValue("NBT");
 
