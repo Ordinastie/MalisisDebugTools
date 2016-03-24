@@ -19,15 +19,15 @@ apply plugin: 'forge'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = "1.8.9-0.1"
+version = "1.9-0.1"
 group = "net.malisis.mdt" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "malisisdebugtools"
 libsDirName = "../releases"
 
 dependencies
 {
-	//compile 'net.malisis:malisiscore:1.8-1.4.0:dev'
-	compile files('../MalisisCore/build/libs/malisiscore-1.8.9-2.0.0-dev.jar')		
+	//compile 'net.malisis:malisiscore:1.9-3.0.0:dev'
+	compile files('../MalisisCore/build/libs/malisiscore-1.8.9-3.0.0-dev.jar')		
 }
 
 // because the normal output has been made to be obfuscated
@@ -43,8 +43,8 @@ artifacts {
 }
 
 minecraft {
-	version = "1.8.9-11.15.1.1722"
-    mappings = "stable_20"
+	version = "1.9-12.16.0.1802-1.9"
+	mappings = "snapshot_20160322"
     
 	if(file("../../run").exists()) 	{
 		runDir = "../../run/assets"

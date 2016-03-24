@@ -32,9 +32,8 @@ import net.malisis.mdt.data.information.DefaultInformation;
 import net.malisis.mdt.gui.component.information.IconInfoComp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 
 /**
  * @author Ordinastie
@@ -42,11 +41,11 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
  */
 public class BlockGroup extends Group
 {
-	protected DefaultInformation<String> name = new DefaultInformation("mdt.block.name");
-	protected DefaultInformation<Integer> id = new DefaultInformation("mdt.block.id");
-	protected DefaultInformation<String> unlocname = new DefaultInformation("mdt.block.unlocname");
-	protected DefaultInformation<Integer> metadata = new DefaultInformation("mdt.block.metadata");
-	protected DefaultInformation<String> position = new DefaultInformation("mdt.block.position");
+	protected DefaultInformation<String> name = new DefaultInformation<>("mdt.block.name");
+	protected DefaultInformation<Integer> id = new DefaultInformation<>("mdt.block.id");
+	protected DefaultInformation<String> unlocname = new DefaultInformation<>("mdt.block.unlocname");
+	protected DefaultInformation<Integer> metadata = new DefaultInformation<>("mdt.block.metadata");
+	protected DefaultInformation<String> position = new DefaultInformation<>("mdt.block.position");
 	protected DefaultInformation<MalisisIcon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
 
 	protected BlockPos pos;
@@ -67,18 +66,18 @@ public class BlockGroup extends Group
 	@Override
 	public boolean updateInformations()
 	{
-		MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
-		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
+		RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
+		if (result == null || result.typeOfHit != RayTraceResult.Type.BLOCK)
 			return false;
 
-		pos = mop.getBlockPos();
+		pos = result.getBlockPos();
 		if (lastPos.equals(pos))
 			return false;
 
 		lastPos = pos;
 
 		MBlockState mstate = new MBlockState(DebugTool.world, pos);
-		ItemStack is = mstate.getBlock().getPickBlock(mop, DebugTool.world, pos, DebugTool.player);
+		ItemStack is = mstate.getBlock().getPickBlock(mstate.getBlockState(), result, DebugTool.world, pos, DebugTool.player);
 
 		name.setValue(is.getDisplayName());
 		unlocname.setValue(mstate.getBlock().getUnlocalizedName());

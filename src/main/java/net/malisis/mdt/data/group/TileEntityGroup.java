@@ -31,9 +31,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 
 /**
  * @author Ordinastie
@@ -61,11 +60,11 @@ public class TileEntityGroup extends Group
 	@Override
 	public boolean updateInformations()
 	{
-		MovingObjectPosition mop = Minecraft.getMinecraft().objectMouseOver;
-		if (mop == null || mop.typeOfHit != MovingObjectType.BLOCK)
+		RayTraceResult result = Minecraft.getMinecraft().objectMouseOver;
+		if (result == null || result.typeOfHit != RayTraceResult.Type.BLOCK)
 			return false;
 
-		pos = mop.getBlockPos();
+		pos = result.getBlockPos();
 		if (lastPos.equals(pos))
 			return false;
 

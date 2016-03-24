@@ -29,9 +29,10 @@ import net.malisis.core.block.MalisisBlock;
 import net.malisis.core.util.AABBUtils;
 import net.malisis.mdt.MalisisDebugTools;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 /**
@@ -51,7 +52,7 @@ public class MdtBlock extends MalisisBlock
 	}
 
 	@Override
-	public AxisAlignedBB getBoundingBox(IBlockAccess world, BlockPos pos, BoundingBoxType type)
+	public AxisAlignedBB getBoundingBox(IBlockAccess world, BlockPos pos, IBlockState state, BoundingBoxType type)
 	{
 		if (type == BoundingBoxType.RAYTRACE || type == BoundingBoxType.SELECTION || world == null)
 			return AABBUtils.identity();
