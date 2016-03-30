@@ -74,7 +74,7 @@ public class AutoWorldLoader
 			Display.update();
 			DisplayMode dm = new DisplayMode(w, h);
 			Display.setDisplayMode(dm);
-			Display.setLocation(0, 0);
+			Display.setLocation(1920, 50);
 
 			Method resize = Minecraft.class.getDeclaredMethod("resize", Integer.TYPE, Integer.TYPE);
 			resize.setAccessible(true);
