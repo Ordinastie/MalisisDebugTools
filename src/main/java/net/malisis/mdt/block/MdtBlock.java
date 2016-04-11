@@ -45,8 +45,8 @@ public class MdtBlock extends MalisisBlock
 
 	public MdtBlock()
 	{
-		super(Material.ground);
-		setCreativeTab(CreativeTabs.tabBlock);
+		super(Material.GROUND);
+		setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
 		setName("blockMDT");
 		setTexture(MalisisDebugTools.modid + ":blocks/blockMdt");
 	}

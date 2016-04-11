@@ -32,7 +32,7 @@ import net.malisis.core.client.gui.component.decoration.UIImage;
 import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.event.component.StateChangeEvent.HoveredStateChange;
 import net.malisis.core.renderer.font.FontRenderOptions;
-import net.malisis.core.renderer.icon.MalisisIcon;
+import net.malisis.core.renderer.icon.Icon;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
 
@@ -42,7 +42,7 @@ import com.google.common.eventbus.Subscribe;
  * @author Ordinastie
  *
  */
-public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComponent<IInformation<MalisisIcon[]>>
+public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComponent<IInformation<Icon[]>>
 {
 	protected UILabel label;
 	protected UIImage[] icons = new UIImage[6];
@@ -75,13 +75,13 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	}
 
 	@Override
-	public void updateInformation(IInformation<MalisisIcon[]> info)
+	public void updateInformation(IInformation<Icon[]> info)
 	{
 		if (info == null)
 			return;
 
 		label.setText(info.getLabel());
-		MalisisIcon[] infoIcons = info.getValue();
+		Icon[] infoIcons = info.getValue();
 		for (int i = 0; i < 6; i++)
 		{
 			if (i < infoIcons.length)

@@ -24,7 +24,7 @@
 
 package net.malisis.mdt.data.group;
 
-import net.malisis.core.renderer.icon.MalisisIcon;
+import net.malisis.core.renderer.icon.Icon;
 import net.malisis.core.util.MBlockState;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.Group;
@@ -46,7 +46,7 @@ public class BlockGroup extends Group
 	protected DefaultInformation<String> unlocname = new DefaultInformation<>("mdt.block.unlocname");
 	protected DefaultInformation<Integer> metadata = new DefaultInformation<>("mdt.block.metadata");
 	protected DefaultInformation<String> position = new DefaultInformation<>("mdt.block.position");
-	protected DefaultInformation<MalisisIcon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
+	protected DefaultInformation<Icon[]> icon = new DefaultInformation("mdt.block.icon", IconInfoComp.class);
 
 	protected BlockPos pos;
 	protected BlockPos lastPos = new BlockPos(0, 999, 0);
@@ -88,7 +88,7 @@ public class BlockGroup extends Group
 		//		for (int i = 0; i < 6; i++)
 		//			icons.add(block.getIcon(DebugTool.world, x, y, z, i));
 		//
-		icon.setValue(new MalisisIcon[0]);
+		icon.setValue(new Icon[0]);
 
 		empty = false;
 		return true;

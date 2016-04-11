@@ -28,7 +28,7 @@ import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.renderer.font.FontRenderOptions;
-import net.malisis.core.renderer.icon.MalisisIcon;
+import net.malisis.core.renderer.icon.Icon;
 import net.malisis.core.util.MouseButton;
 
 import org.lwjgl.opengl.Display;
@@ -72,7 +72,7 @@ public class MDTTextureGui extends MalisisGui
 			if (size == -1)
 				size = Display.getHeight() / getGui().getRenderer().getScaleFactor();
 
-			float atlasFactor = MalisisIcon.BLOCK_TEXTURE_WIDTH / MalisisIcon.BLOCK_TEXTURE_HEIGHT;
+			float atlasFactor = Icon.BLOCK_TEXTURE_WIDTH / Icon.BLOCK_TEXTURE_HEIGHT;
 
 			renderer.disableTextures();
 			shape.resetState();
