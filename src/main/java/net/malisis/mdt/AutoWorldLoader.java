@@ -35,7 +35,7 @@ import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.storage.ISaveFormat;
-import net.minecraft.world.storage.SaveFormatComparator;
+import net.minecraft.world.storage.WorldSummary;
 import net.minecraftforge.fml.common.StartupQuery;
 
 import org.lwjgl.LWJGLException;
@@ -49,7 +49,7 @@ import org.lwjgl.opengl.DisplayMode;
 public class AutoWorldLoader
 {
 	private Minecraft mc = Minecraft.getMinecraft();
-	private SaveFormatComparator save;
+	private WorldSummary save;
 
 	public AutoWorldLoader()
 	{
@@ -104,7 +104,7 @@ public class AutoWorldLoader
 		try
 		{
 			ISaveFormat isaveformat = mc.getSaveLoader();
-			List<SaveFormatComparator> saves = isaveformat.getSaveList();
+			List<WorldSummary> saves = isaveformat.getSaveList();
 			Collections.sort(saves);
 			save = saves.get(0);
 		}
