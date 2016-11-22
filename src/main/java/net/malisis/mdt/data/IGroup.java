@@ -22,13 +22,24 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.gui;
+package net.malisis.mdt.data;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Ordinastie
  *
  */
-public interface IInfoComponent<T>
+public interface IGroup extends Iterable<IInformation<?>>
 {
-	public void updateInformation(T info);
+	public String getName();
+
+	public Set<IInformation<?>> getInformations();
+
+	@Override
+	public default Iterator<IInformation<?>> iterator()
+	{
+		return getInformations().iterator();
+	}
 }

@@ -24,36 +24,21 @@
 
 package net.malisis.mdt.data.information;
 
-import java.lang.reflect.Constructor;
-
-import net.malisis.core.client.gui.MalisisGui;
-import net.malisis.core.client.gui.component.UIComponent;
-import net.malisis.mdt.MalisisDebugTools;
 import net.malisis.mdt.data.IInformation;
-import net.malisis.mdt.gui.IInfoComponent;
-import net.malisis.mdt.gui.component.information.DefaultInfoComp;
 
 /**
  * @author Ordinastie
  *
  */
-public class DefaultInformation<T> implements IInformation<T>
+public class Information<T> implements IInformation<T>
 {
-	private Class<? extends UIComponent> componentClass;
-	protected UIComponent<? extends IInfoComponent<T>> component;
 	protected String label;
 	protected T value;
-	private boolean invokeFailed = false;
 
-	public <S extends UIComponent & IInfoComponent<T>> DefaultInformation(String label, Class<S> componentClass)
+	public Information(String label, T value)
 	{
 		this.label = label;
-		this.componentClass = componentClass != null ? componentClass : DefaultInfoComp.class;
-	}
-
-	public DefaultInformation(String label)
-	{
-		this(label, null);
+		this.value = value;
 	}
 
 	@Override
@@ -66,37 +51,5 @@ public class DefaultInformation<T> implements IInformation<T>
 	public T getValue()
 	{
 		return value;
-	}
-
-	@Override
-	public void setValue(T value)
-	{
-		this.value = value;
-	}
-
-	@Override
-	public <S extends UIComponent & IInfoComponent> S getComponent(MalisisGui gui)
-	{
-		if (component == null && !invokeFailed)
-		{
-			try
-			{
-				Constructor<? extends UIComponent> ctr = componentClass.getConstructor(MalisisGui.class);
-				if (ctr == null)
-				{
-					invokeFailed = true;
-					MalisisDebugTools.log.error("Could not find constructor for {}", componentClass.getSimpleName());
-					return null;
-				}
-				component = ctr.newInstance(gui);
-			}
-			catch (ReflectiveOperationException e)
-			{
-				invokeFailed = true;
-				e.printStackTrace();
-			}
-		}
-
-		return (S) component;
 	}
 }

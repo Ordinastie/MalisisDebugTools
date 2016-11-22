@@ -25,56 +25,47 @@
 package net.malisis.mdt.data.category;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.IGroup;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 /**
  * @author Ordinastie
  *
  */
-public class ItemCategory implements ICategory
+public class Categories
 {
-	public ItemCategory()
-	{
-		Categories.registerCategory(this);
+	private static Set<ICategory> categories = Sets.newHashSet();
+	private static Multimap<ICategory, Function<DebugTool, IGroup>> factories = ArrayListMultimap.create();
 
+	public static final ICategory BLOCK_CATEGORY = new BlockCategory();
+	public static final ICategory ITEM_CATEGORY = new ItemCategory();
+
+	static
+	{}
+
+	public static void registerCategory(ICategory category)
+	{
+		categories.add(category);
+		category.getFactories().forEach(f -> registerFactory(category, f));
 	}
 
-	@Override
-	public String getName()
+	public static void registerFactory(ICategory category, Function<DebugTool, IGroup> factory)
 	{
-		return "mdt.item.category";
+		factories.put(category, factory);
 	}
 
-	@Override
-	public boolean shouldRefresh(DebugTool tool)
+	public static List<IGroup> generateGroups(DebugTool debugTool, ICategory category)
 	{
-		return tool.equippedItem.hasChanged() && tool.equippedItem.get() != null;
+		return factories.get(category).stream().map(f -> f.apply(debugTool)).filter(Objects::nonNull).collect(Collectors.toList());
 	}
-
-	@Override
-	public List<Function<DebugTool, IGroup>> getFactories()
-	{
-		List<Function<DebugTool, IGroup>> list = Lists.newArrayList();
-		list.add(ItemCategory::createItemGroup);
-		list.add(ItemCategory::createItemStackGroup);
-		return list;
-	}
-
-	private static IGroup createItemGroup(DebugTool tool)
-	{
-
-		return null;
-	}
-
-	private static IGroup createItemStackGroup(DebugTool tool)
-	{
-		return null;
-	}
-
 }

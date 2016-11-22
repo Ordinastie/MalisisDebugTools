@@ -22,59 +22,50 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.data.category;
+package net.malisis.mdt.data.cacheddata;
 
-import java.util.List;
-import java.util.function.Function;
+import static com.google.common.base.Preconditions.*;
 
-import net.malisis.mdt.DebugTool;
-import net.malisis.mdt.data.ICategory;
-import net.malisis.mdt.data.IGroup;
-
-import com.google.common.collect.Lists;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 /**
  * @author Ordinastie
  *
  */
-public class ItemCategory implements ICategory
+public class CachedData<T>
 {
-	public ItemCategory()
-	{
-		Categories.registerCategory(this);
+	private Supplier<T> getter;
+	private BiPredicate<T, T> predicate;
+	private T lastData;
+	private T currentData;
 
+	public CachedData(Supplier<T> getter, BiPredicate<T, T> predicate)
+	{
+		this.getter = checkNotNull(getter);
+		this.predicate = checkNotNull(predicate);
+		currentData = lastData = getter.get();
 	}
 
-	@Override
-	public String getName()
+	public CachedData(Supplier<T> getter)
 	{
-		return "mdt.item.category";
+		this(getter, (t1, t2) -> Objects.equals(t1, t2));
 	}
 
-	@Override
-	public boolean shouldRefresh(DebugTool tool)
+	public T get()
 	{
-		return tool.equippedItem.hasChanged() && tool.equippedItem.get() != null;
+		return currentData;
 	}
 
-	@Override
-	public List<Function<DebugTool, IGroup>> getFactories()
+	public void update()
 	{
-		List<Function<DebugTool, IGroup>> list = Lists.newArrayList();
-		list.add(ItemCategory::createItemGroup);
-		list.add(ItemCategory::createItemStackGroup);
-		return list;
+		lastData = currentData;
+		currentData = getter.get();
 	}
 
-	private static IGroup createItemGroup(DebugTool tool)
+	public boolean hasChanged()
 	{
-
-		return null;
+		return predicate.test(lastData, currentData);
 	}
-
-	private static IGroup createItemStackGroup(DebugTool tool)
-	{
-		return null;
-	}
-
 }

@@ -25,57 +25,47 @@
 package net.malisis.mdt.gui.component.information;
 
 import net.malisis.core.client.gui.Anchor;
-import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UILabel;
-import net.malisis.core.renderer.font.FontRenderOptions;
+import net.malisis.core.renderer.font.FontOptions;
+import net.malisis.core.renderer.font.FontOptions.FontOptionsBuilder;
 import net.malisis.core.renderer.font.MalisisFont;
 import net.malisis.mdt.data.IInformation;
-import net.malisis.mdt.gui.IInfoComponent;
+import net.malisis.mdt.gui.DebugGui;
 
 /**
  * @author Ordinastie
  *
  */
-public class DefaultInfoComp<T extends IInformation> extends UIContainer<DefaultInfoComp<T>> implements IInfoComponent<T>
+public class InformationComponent extends UIContainer<InformationComponent>
 {
+	public static FontOptionsBuilder builder = FontOptions.builder();
 	protected UILabel label;
 	protected UILabel value;
-	protected int baseColor = 0xAAAAFF;
-	protected FontRenderOptions fro;
 
-	public DefaultInfoComp(MalisisGui gui)
+	public InformationComponent(DebugGui gui, IInformation<?> information)
 	{
 		super(gui);
-		fro = new FontRenderOptions();
-		fro.color = baseColor;
-		label = new UILabel(gui).setFontRenderOptions(fro);
-		value = new UILabel(gui).setFontRenderOptions(fro).setAnchor(Anchor.RIGHT);
+
+		int labelColor = 0xAAAAFF;
+		int valueColor = 0xFFFFFF;
+		Object v = information.getValue();
+		if (v instanceof Boolean)
+			valueColor = (boolean) v ? 0x33AA33 : 0x993333;
+
+		label = new UILabel(gui, information.getLabel()).setFontOptions(builder.color(labelColor).build());
+		value = new UILabel(gui, information.getStringValue()).setFontOptions(builder.color(valueColor).build()).setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 
-		setSize(UIComponent.INHERITED, (int) (MalisisFont.minecraftFont.getStringHeight() + 2));
-	}
-
-	@Override
-	public void updateInformation(T info)
-	{
-		if (info == null)
-			return;
-
-		label.setText(info.getLabel());
-		fro.color = baseColor;
-
-		Object v = info.getValue();
-		if (v == null)
+		int h = (int) MalisisFont.minecraftFont.getStringHeight() + 2;
+		if (label.getWidth() + value.getWidth() > gui.getWindowWidth())
 		{
-			value.setText(" - ");
-			return;
+			value.setPosition(0, h);
+			h *= 2;
 		}
 
-		if (v instanceof Boolean)
-			fro.color = ((boolean) v ? 0x33AA33 : 0x993333);
-		value.setText(v.toString());
+		setSize(UIComponent.INHERITED, h);
 	}
 }

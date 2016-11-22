@@ -25,6 +25,9 @@
 package net.malisis.mdt.data;
 
 import java.util.List;
+import java.util.function.Function;
+
+import net.malisis.mdt.DebugTool;
 
 /**
  * @author Ordinastie
@@ -34,7 +37,7 @@ public interface ICategory
 {
 	public String getName();
 
-	public List<Group> listGroups();
+	public List<Function<DebugTool, IGroup>> getFactories();
 
-	public void updateGroups();
+	public boolean shouldRefresh(DebugTool tool);
 }

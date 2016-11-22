@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.malisis.core.MalisisCore;
-import net.minecraft.client.AnvilConverterException;
+import net.malisis.core.asm.AsmUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.client.gui.GuiScreen;
@@ -82,13 +82,14 @@ public class AutoWorldLoader
 				h = 1132;
 			}
 
-			Display.update();
 			DisplayMode dm = new DisplayMode(w, h);
+			Display.update();
 			Display.setDisplayMode(dm);
 			Display.setLocation(x, y);
+			Display.setResizable(false);
 			Display.setResizable(true);
 
-			Method resize = Minecraft.class.getDeclaredMethod("resize", Integer.TYPE, Integer.TYPE);
+			Method resize = AsmUtils.changeMethodAccess(Minecraft.class, "resize", Integer.TYPE, Integer.TYPE);
 			resize.setAccessible(true);
 			resize.invoke(Minecraft.getMinecraft(), w, h);
 
@@ -106,9 +107,10 @@ public class AutoWorldLoader
 			ISaveFormat isaveformat = mc.getSaveLoader();
 			List<WorldSummary> saves = isaveformat.getSaveList();
 			Collections.sort(saves);
-			save = saves.get(0);
+			if (saves.size() != 0)
+				save = saves.get(0);
 		}
-		catch (AnvilConverterException e)
+		catch (Exception e)
 		{
 			MalisisCore.log.error("Couldn\'t load level list", e);
 			this.mc.displayGuiScreen(new GuiErrorScreen("Unable to load worlds", e.getMessage()));
@@ -118,6 +120,9 @@ public class AutoWorldLoader
 
 	public void loadWorld()
 	{
+		if (save == null)
+			return;
+
 		String dirName = save.getFileName();
 		if (dirName == null)
 			dirName = "World" + 0;

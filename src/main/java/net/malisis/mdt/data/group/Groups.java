@@ -24,24 +24,12 @@
 
 package net.malisis.mdt.data.group;
 
-import net.malisis.mdt.data.Group;
 
 /**
  * @author Ordinastie
  *
  */
-public class ItemGroup extends Group
+public class Groups
 {
-	public ItemGroup()
-	{
-		super("mdt.item.groupname");
-	}
-
-	@Override
-	public boolean updateInformations()
-	{
-
-		return false;
-	}
 
 }

@@ -57,13 +57,13 @@ public class MDTCommand extends CommandBase
 	}
 
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return "mdt";
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender)
+	public String getUsage(ICommandSender sender)
 	{
 		return "mdt.command.usage";
 	}
@@ -112,7 +112,7 @@ public class MDTCommand extends CommandBase
 	}
 
 	@Override
-	public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
+	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] params, BlockPos pos)
 	{
 		if (params.length == 1)
 			return getListOfStringsMatchingLastWord(params, parameters);

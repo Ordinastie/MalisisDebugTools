@@ -24,15 +24,15 @@
 
 package net.malisis.mdt.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.malisis.core.client.gui.MalisisGui;
+import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.KeyBindings;
-import net.malisis.mdt.data.Group;
+import net.malisis.mdt.data.IGroup;
+import net.malisis.mdt.data.category.Categories;
 import net.malisis.mdt.gui.component.DebugWindow;
-import net.malisis.mdt.gui.component.GroupContainer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -42,11 +42,12 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class DebugGui extends MalisisGui
 {
-	private List<GroupContainer> groupContainers = new ArrayList();
 	private DebugWindow window;
+	private DebugTool tool;
 
-	public DebugGui()
+	public DebugGui(DebugTool tool)
 	{
+		this.tool = tool;
 		guiscreenBackground = false;
 		renderer.setIgnoreScale(true);
 
@@ -58,6 +59,11 @@ public class DebugGui extends MalisisGui
 	{
 		window = new DebugWindow(this);
 		addToScreen(window);
+	}
+
+	public int getWindowWidth()
+	{
+		return window.getWidth();
 	}
 
 	@Override
@@ -81,8 +87,6 @@ public class DebugGui extends MalisisGui
 			constructed = true;
 		}
 
-		updateDebugWindow();
-
 		renderer.enableBlending();
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -104,29 +108,24 @@ public class DebugGui extends MalisisGui
 		super.close();
 	}
 
-	private void updateDebugWindow()
+	@Override
+	public void update(int mouseX, int mouseY, float partialTick)
 	{
-		DebugTool dt = DebugTool.get();
-		dt.updateInformations();
-		boolean changed = dt.categoryChanged();
-		if (changed)
-		{
-			window.removeAll();
-			groupContainers.clear();
-			for (Group group : DebugTool.get().listDebugGroups())
-			{
-				GroupContainer cont = new GroupContainer(this);
-				cont.setDebugGroup(this, group);
-				groupContainers.add(cont);
-				window.add(cont);
-			}
-		}
+		tool.equippedItem.update();
+		tool.rayTraceResult.update();
+		if (!tool.shouldRefresh())
+			return;
 
-		int h = 0;
-		for (GroupContainer cont : groupContainers)
+		window.removeAll();
+		int h = 10;
+		List<IGroup> groups = Categories.generateGroups(tool, tool.getCurrentCategory());
+		for (IGroup group : groups)
 		{
-			cont.setPosition(0, h);
-			h += cont.updateInfos(this);
+			UIComponent<?> component = ComponentProviders.getComponent(this, group);
+			component.setPosition(0, h);
+			h += component.getHeight() + 5;
+
+			window.add(component);
 		}
 	}
 }

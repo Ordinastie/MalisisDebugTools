@@ -22,25 +22,21 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.data.category;
+package net.malisis.mdt.gui.component.information;
 
-import net.malisis.mdt.data.Category;
-import net.malisis.mdt.data.group.BlockGroup;
-import net.malisis.mdt.data.group.TileEntityGroup;
+import net.malisis.core.client.gui.component.container.UIContainer;
+import net.malisis.mdt.data.IInformation;
+import net.malisis.mdt.gui.DebugGui;
 
 /**
  * @author Ordinastie
  *
  */
-public class BlockCaterogy extends Category
+public class BlockStateComponent extends UIContainer<BlockStateComponent>
 {
-	public BlockCaterogy()
+
+	public BlockStateComponent(DebugGui gui, IInformation<?> information)
 	{
-		super("mdt.block.category");
-
-		addGroup(new BlockGroup());
-		addGroup(new TileEntityGroup());
-
+		super(gui);
 	}
-
 }

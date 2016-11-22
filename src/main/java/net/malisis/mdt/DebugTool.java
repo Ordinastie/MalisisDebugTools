@@ -27,14 +27,11 @@ package net.malisis.mdt;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.malisis.mdt.data.Group;
 import net.malisis.mdt.data.ICategory;
-import net.malisis.mdt.data.category.BlockCaterogy;
-import net.malisis.mdt.data.category.ItemCategory;
+import net.malisis.mdt.data.cacheddata.CachedEquippedItem;
+import net.malisis.mdt.data.cacheddata.CachedRayTraceResult;
+import net.malisis.mdt.data.category.Categories;
 import net.malisis.mdt.gui.DebugGui;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.world.World;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -46,12 +43,12 @@ import org.lwjgl.opengl.Display;
 public class DebugTool
 {
 	private static DebugTool instance = new DebugTool();
-	public static Minecraft mc = Minecraft.getMinecraft();
-	public static World world = mc.theWorld;
-	public static EntityPlayerSP player = mc.thePlayer;
 	private DebugGui debugGui;
 
-	private List<ICategory> debugCategories = new ArrayList<>();
+	public CachedRayTraceResult rayTraceResult = new CachedRayTraceResult();
+	public CachedEquippedItem equippedItem = new CachedEquippedItem();
+
+	private List<ICategory> categories = new ArrayList<>();
 	private ICategory currentCategory;
 	private boolean categoryChanged = false;
 
@@ -62,49 +59,21 @@ public class DebugTool
 
 	private DebugTool()
 	{
-		debugGui = new DebugGui();
+		debugGui = new DebugGui(this);
+		setCurrentCategory(Categories.BLOCK_CATEGORY);
 
-		ICategory cat = new BlockCaterogy();
-		registerCategory(cat);
-		registerCategory(new ItemCategory());
-
-		setCurrentCategory(cat);
 	}
 
-	public boolean categoryChanged()
+	public ICategory getCurrentCategory()
 	{
-		if (categoryChanged)
-		{
-			categoryChanged = false;
-			return true;
-		}
-
-		return false;
+		return currentCategory;
 	}
 
-	//	private void setActive(boolean active)
-	//	{
-	//		if (active)
-	//		{
-	//			if (debugGui != null)
-	//				MinecraftForge.EVENT_BUS.unregister(debugGui);
-	//			debugGui = new DebugGui();
-	//			MinecraftForge.EVENT_BUS.register(debugGui);
-	//			categoryChanged = true;
-	//		}
-	//		else
-	//		{
-	//			if (debugGui != null)
-	//			{
-	//				MinecraftForge.EVENT_BUS.unregister(debugGui);
-	//				if (MalisisGui.currentGui() == debugGui)
-	//					debugGui.close();
-	//				debugGui = null;
-	//				mc.mouseHelper.grabMouseCursor();
-	//			}
-	//		}
-	//		this.active = active;
-	//	}
+	public boolean shouldRefresh()
+	{
+		categoryChanged = false;
+		return categoryChanged || currentCategory.shouldRefresh(this);
+	}
 
 	private void setActive(boolean active)
 	{
@@ -116,58 +85,11 @@ public class DebugTool
 		this.active = active;
 	}
 
-	public void registerCategory(ICategory category)
-	{
-		debugCategories.add(category);
-	}
-
-	public void updateInformations()
-	{
-		if (currentCategory != null)
-			currentCategory.updateGroups();
-	}
-
 	public void setCurrentCategory(ICategory category)
 	{
 		currentCategory = category;
 		categoryChanged = true;
-
 	}
-
-	public List<Group> listDebugGroups()
-	{
-		if (currentCategory == null)
-			return null;
-
-		return currentCategory.listGroups();
-	}
-
-	public List<ICategory> listDebugCategories()
-	{
-		return debugCategories;
-	}
-
-	//	public void toggleMouseControl()
-	//	{
-	//		if (Mouse.isGrabbed() && mc.currentScreen == null)
-	//		{
-	//			if (!active)
-	//			{
-	//				setActive(true);
-	//				return;
-	//			}
-	//			mc.displayGuiScreen(debugGui);
-	//			Mouse.setCursorPosition(mouseLastPosX, mouseLastPosY);
-	//		}
-	//		else if (!Mouse.isGrabbed())
-	//		{
-	//			mouseLastPosX = Mouse.getX();
-	//			mouseLastPosY = Mouse.getY();
-	//			MalisisGui.setHoveredComponent(null, false);
-	//			mc.displayGuiScreen(null);
-	//		}
-	//
-	//	}
 
 	public void toggleMouseControl()
 	{
@@ -205,7 +127,6 @@ public class DebugTool
 		instance.setActive(false);
 		instance = new DebugTool();
 		instance.setActive(true);
-
 	}
 
 }

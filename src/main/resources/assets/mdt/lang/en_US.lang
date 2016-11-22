@@ -1,8 +1,9 @@
 mdt.commands.usage=Use /mdt [toggle/activate/deactivate]
 
 mdt.block.groupname=Block
-mdt.block.name=Localised name
+mdt.block.name=Localized name
 mdt.block.unlocname=Unlocalized name
+mdt.block.id=Internal ID
 mdt.block.metadata=Metadata
 mdt.block.position=Position
 
@@ -11,3 +12,5 @@ mdt.te.type=Type
 mdt.te.update=Can update
 mdt.te.inventory=Has inventory
 mdt.te.nbt=NBT
+
+mdt.blockdata.groupname=Block Data

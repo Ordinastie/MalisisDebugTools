@@ -22,59 +22,29 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.data.category;
+package net.malisis.mdt.data.cacheddata;
 
-import java.util.List;
-import java.util.function.Function;
-
-import net.malisis.mdt.DebugTool;
-import net.malisis.mdt.data.ICategory;
-import net.malisis.mdt.data.IGroup;
-
-import com.google.common.collect.Lists;
+import net.malisis.core.util.Utils;
+import net.minecraft.item.ItemStack;
 
 /**
  * @author Ordinastie
  *
  */
-public class ItemCategory implements ICategory
+public class CachedEquippedItem extends CachedData<ItemStack>
 {
-	public ItemCategory()
+	public CachedEquippedItem()
 	{
-		Categories.registerCategory(this);
-
+		super(CachedEquippedItem::getEquippedItem, CachedEquippedItem::compare);
 	}
 
-	@Override
-	public String getName()
+	private static ItemStack getEquippedItem()
 	{
-		return "mdt.item.category";
+		return Utils.getClientPlayer().getHeldItemMainhand();
 	}
 
-	@Override
-	public boolean shouldRefresh(DebugTool tool)
+	private static boolean compare(ItemStack is1, ItemStack is2)
 	{
-		return tool.equippedItem.hasChanged() && tool.equippedItem.get() != null;
+		return ItemStack.areItemStacksEqual(is1, is2);
 	}
-
-	@Override
-	public List<Function<DebugTool, IGroup>> getFactories()
-	{
-		List<Function<DebugTool, IGroup>> list = Lists.newArrayList();
-		list.add(ItemCategory::createItemGroup);
-		list.add(ItemCategory::createItemStackGroup);
-		return list;
-	}
-
-	private static IGroup createItemGroup(DebugTool tool)
-	{
-
-		return null;
-	}
-
-	private static IGroup createItemStackGroup(DebugTool tool)
-	{
-		return null;
-	}
-
 }

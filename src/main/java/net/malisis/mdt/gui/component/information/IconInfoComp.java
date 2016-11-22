@@ -31,7 +31,7 @@ import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UIImage;
 import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.event.component.StateChangeEvent.HoveredStateChange;
-import net.malisis.core.renderer.font.FontRenderOptions;
+import net.malisis.core.renderer.font.FontOptions;
 import net.malisis.core.renderer.icon.Icon;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.IInfoComponent;
@@ -48,14 +48,14 @@ public class IconInfoComp extends UIContainer<IconInfoComp> implements IInfoComp
 	protected UIImage[] icons = new UIImage[6];
 	protected UIImage zoom;
 	protected int baseColor = 0xAAAAFF;
-	protected FontRenderOptions fro;
+	protected FontOptions fro;
 
 	public IconInfoComp(MalisisGui gui)
 	{
 		super(gui);
-		fro = new FontRenderOptions();
+		fro = new FontOptions();
 		fro.color = baseColor;
-		label = new UILabel(gui).setFontRenderOptions(fro);
+		label = new UILabel(gui).setFontOptions(fro);
 		add(label);
 		UIImage img;
 		for (int i = 0; i < 6; i++)

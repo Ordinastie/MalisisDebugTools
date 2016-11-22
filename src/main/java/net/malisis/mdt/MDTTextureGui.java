@@ -27,7 +27,7 @@ package net.malisis.mdt;
 import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
-import net.malisis.core.renderer.font.FontRenderOptions;
+import net.malisis.core.renderer.font.FontOptions;
 import net.malisis.core.renderer.icon.Icon;
 import net.malisis.core.util.MouseButton;
 
@@ -47,6 +47,7 @@ public class MDTTextureGui extends MalisisGui
 
 	public static class TextureDebug extends UIComponent<TextureDebug>
 	{
+		private FontOptions fontOptions = FontOptions.builder().color(0xFFFFFF).shadow().build();
 		private int size = -1;
 		private float factor = 1;
 		private int px = 0;
@@ -90,16 +91,12 @@ public class MDTTextureGui extends MalisisGui
 			shape.setPosition(px, py);
 			renderer.drawShape(shape, rp);
 
-			FontRenderOptions fro = new FontRenderOptions();
-			fro.color = 0xFFFFFF;
-			fro.shadow = true;
-
 			float u = (mouseX - px) / 1024F * getGui().getRenderer().getScaleFactor() / factor;
 			float v = (mouseY - py) / 1024F * getGui().getRenderer().getScaleFactor() / factor;
 
-			renderer.drawText(null, "Atlas : " + atlasWidth + "x" + atlasHeight, 10, 10, 0, fro);
-			renderer.drawText(null, "U : " + u, 10, 20, 0, fro);
-			renderer.drawText(null, "V : " + v, 10, 30, 0, fro);
+			renderer.drawText(null, "Atlas : " + atlasWidth + "x" + atlasHeight, 10, 10, 0, fontOptions);
+			renderer.drawText(null, "U : " + u, 10, 20, 0, fontOptions);
+			renderer.drawText(null, "V : " + v, 10, 30, 0, fontOptions);
 		}
 
 		@Override

@@ -24,23 +24,37 @@
 
 package net.malisis.mdt.data.group;
 
-import net.malisis.mdt.data.Group;
+import java.util.Set;
+
+import net.malisis.mdt.data.IGroup;
+import net.malisis.mdt.data.IInformation;
+
+import com.google.common.collect.Sets;
 
 /**
  * @author Ordinastie
  *
  */
-public class ItemStackGroup extends Group
+public class Group implements IGroup
 {
-	public ItemStackGroup()
+	protected String name;
+	private Set<IInformation<?>> infos = Sets.newHashSet();
+
+	public Group(String name, Set<IInformation<?>> infos)
 	{
-		super("mdt.itemstack.groupname");
+		this.name = name;
+		this.infos = infos;
 	}
 
 	@Override
-	public boolean updateInformations()
+	public String getName()
 	{
-		return false;
+		return name;
 	}
 
+	@Override
+	public Set<IInformation<?>> getInformations()
+	{
+		return infos;
+	}
 }

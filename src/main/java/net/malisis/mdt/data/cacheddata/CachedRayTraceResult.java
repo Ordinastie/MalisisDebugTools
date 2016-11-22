@@ -22,51 +22,31 @@
  * THE SOFTWARE.
  */
 
-package net.malisis.mdt.data;
+package net.malisis.mdt.data.cacheddata;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.RayTraceResult;
+
+import com.google.common.base.Objects;
 
 /**
  * @author Ordinastie
  *
  */
-public class Category implements ICategory
+public class CachedRayTraceResult extends CachedData<RayTraceResult>
 {
-	private final String name;
-	private final List<Group> groups = new ArrayList<>();
-
-	public Category(String name)
+	public CachedRayTraceResult()
 	{
-		this.name = name;
+		super(CachedRayTraceResult::getResult, CachedRayTraceResult::compare);
 	}
 
-	public Category(Group group)
+	private static RayTraceResult getResult()
 	{
-		this.name = group.getName();
-		addGroup(group);
+		return Minecraft.getMinecraft().objectMouseOver;
 	}
 
-	@Override
-	public String getName()
+	private static boolean compare(RayTraceResult r1, RayTraceResult r2)
 	{
-		return name;
-	}
-
-	public void addGroup(Group group)
-	{
-		groups.add(group);
-	}
-
-	public void updateGroups()
-	{
-		for (Group group : groups)
-			group.update();
-	}
-
-	@Override
-	public List<Group> listGroups()
-	{
-		return groups;
+		return r1.typeOfHit != r2.typeOfHit || !Objects.equal(r1.getBlockPos(), r2.getBlockPos());
 	}
 }

@@ -24,13 +24,11 @@
 
 package net.malisis.mdt.data;
 
-import net.malisis.core.client.gui.MalisisGui;
-import net.malisis.core.client.gui.component.UIComponent;
-import net.malisis.mdt.gui.IInfoComponent;
-
 /**
- * @author Ordinastie
+ * The Interface IInformation.
  *
+ * @author Ordinastie
+ * @param <T> Type of information
  */
 public interface IInformation<T>
 {
@@ -38,7 +36,9 @@ public interface IInformation<T>
 
 	public T getValue();
 
-	public void setValue(T value);
+	public default String getStringValue()
+	{
+		return getValue() != null ? getValue().toString() : " - ";
+	}
 
-	public <S extends UIComponent & IInfoComponent> S getComponent(MalisisGui gui);
 }

@@ -49,7 +49,7 @@ public class MDTTransformer extends MalisisClassTransformer
 
 	private AsmHook autoWorldLoadHook()
 	{
-		McpMethodMapping startMethod = new McpMethodMapping("startGame", "func_71384_a", "net.minecraft.client.Minecraft", "()V");
+		McpMethodMapping startMethod = new McpMethodMapping("init", "func_71384_a", "net.minecraft.client.Minecraft", "()V");
 
 		AsmHook ah = new AsmHook(startMethod);
 

@@ -25,13 +25,14 @@
 package net.malisis.mdt.gui.component;
 
 import net.malisis.core.client.gui.GuiRenderer;
-import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
-import net.malisis.core.renderer.font.FontRenderOptions;
-import net.malisis.mdt.data.Group;
+import net.malisis.core.client.gui.component.decoration.UISeparator;
+import net.malisis.core.renderer.font.FontOptions;
+import net.malisis.mdt.data.IGroup;
 import net.malisis.mdt.data.IInformation;
-import net.malisis.mdt.gui.IInfoComponent;
+import net.malisis.mdt.gui.ComponentProviders;
+import net.malisis.mdt.gui.DebugGui;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,65 +40,33 @@ import org.lwjgl.opengl.GL11;
  * @author Ordinastie
  *
  */
-public class GroupContainer extends UIContainer
+public class GroupContainer extends UIContainer<GroupContainer>
 {
-	private Group group;
-	private FontRenderOptions fro;
+	private IGroup group;
+	private FontOptions fontOptions = FontOptions.builder().scale(2).color(0xFFFFFF).shadow().build();
 
-	public GroupContainer(MalisisGui gui)
+	public GroupContainer(DebugGui gui, IGroup group)
 	{
 		super(gui);
-		clipContent = false;
-		fro = new FontRenderOptions();
-		fro.color = 0xFFFFFF;
-		fro.shadow = true;
-	}
-
-	public void setDebugGroup(MalisisGui gui, Group group)
-	{
 		this.group = group;
-		for (IInformation di : group)
-		{
-			UIComponent comp = di.getComponent(gui);
-			add(comp);
-		}
-	}
-
-	public int updateInfos(MalisisGui gui)
-	{
-		if (group.isEmpty())
-		{
-			this.setVisible(false);
-			return 0;
-		}
-
-		setVisible(true);
-
-		if (!group.isUpdated())
-			return getHeight();
-
+		clipContent = false;
+		add(new UISeparator(gui).setPosition(0, 20).setColor(0xFFFFFF));
 		int h = 30;
-		UIComponent comp;
-		for (IInformation di : group)
+		for (IInformation<?> info : group)
 		{
-			comp = di.getComponent(gui);
-			if (comp != null)
-			{
-				comp.setPosition(0, h);
-				h += comp.getHeight();
-				((IInfoComponent) comp).updateInformation(di);
-			}
+			UIComponent<?> component = ComponentProviders.getComponent(gui, info);
+			component.setPosition(0, h);
+			h += component.getHeight();
+			add(component);
 		}
 
-		setSize(UIComponent.INHERITED, h + 5);
-		return getHeight();
+		setSize(INHERITED, h + 5);
 	}
 
 	@Override
 	public void drawBackground(GuiRenderer renderer, int mouseX, int mouseY, float partialTick)
 	{
-		fro.fontScale = 2;
-		renderer.drawText(null, group.getName(), 5, 0, 0, fro);
+		renderer.drawText(null, group.getName(), 5, 0, 0, fontOptions);
 
 		renderer.next(GL11.GL_QUADS);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
