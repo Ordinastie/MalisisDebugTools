@@ -56,7 +56,6 @@ public class Categories
 	public static void registerCategory(ICategory category)
 	{
 		categories.add(category);
-		category.getFactories().forEach(f -> registerFactory(category, f));
 	}
 
 	public static void registerFactory(ICategory category, Function<DebugTool, IGroup> factory)

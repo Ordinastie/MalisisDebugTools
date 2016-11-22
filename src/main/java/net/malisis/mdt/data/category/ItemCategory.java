@@ -24,14 +24,9 @@
 
 package net.malisis.mdt.data.category;
 
-import java.util.List;
-import java.util.function.Function;
-
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.IGroup;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Ordinastie
@@ -42,6 +37,8 @@ public class ItemCategory implements ICategory
 	public ItemCategory()
 	{
 		Categories.registerCategory(this);
+		Categories.registerFactory(this, this::createItemGroup);
+		Categories.registerFactory(this, this::createItemStackGroup);
 
 	}
 
@@ -57,22 +54,13 @@ public class ItemCategory implements ICategory
 		return tool.equippedItem.hasChanged() && tool.equippedItem.get() != null;
 	}
 
-	@Override
-	public List<Function<DebugTool, IGroup>> getFactories()
-	{
-		List<Function<DebugTool, IGroup>> list = Lists.newArrayList();
-		list.add(ItemCategory::createItemGroup);
-		list.add(ItemCategory::createItemStackGroup);
-		return list;
-	}
-
-	private static IGroup createItemGroup(DebugTool tool)
+	private IGroup createItemGroup(DebugTool tool)
 	{
 
 		return null;
 	}
 
-	private static IGroup createItemStackGroup(DebugTool tool)
+	private IGroup createItemStackGroup(DebugTool tool)
 	{
 		return null;
 	}

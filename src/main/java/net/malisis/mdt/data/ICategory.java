@@ -24,9 +24,6 @@
 
 package net.malisis.mdt.data;
 
-import java.util.List;
-import java.util.function.Function;
-
 import net.malisis.mdt.DebugTool;
 
 /**
@@ -36,8 +33,6 @@ import net.malisis.mdt.DebugTool;
 public interface ICategory
 {
 	public String getName();
-
-	public List<Function<DebugTool, IGroup>> getFactories();
 
 	public boolean shouldRefresh(DebugTool tool);
 }

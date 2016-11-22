@@ -24,9 +24,7 @@
 
 package net.malisis.mdt.data.category;
 
-import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import net.malisis.core.util.TileEntityUtils;
 import net.malisis.core.util.Utils;
@@ -49,7 +47,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -61,6 +58,9 @@ public class BlockCategory implements ICategory
 	public BlockCategory()
 	{
 		Categories.registerCategory(this);
+		Categories.registerFactory(this, this::createBlockGroup);
+		Categories.registerFactory(this, this::createTileEntityGroup);
+		Categories.registerFactory(this, this::createBlockDataGroup);
 	}
 
 	@Override
@@ -70,22 +70,12 @@ public class BlockCategory implements ICategory
 	}
 
 	@Override
-	public List<Function<DebugTool, IGroup>> getFactories()
-	{
-		List<Function<DebugTool, IGroup>> list = Lists.newArrayList();
-		list.add(BlockCategory::createBlockGroup);
-		list.add(BlockCategory::createTileEntityGroup);
-		list.add(BlockCategory::createBlockDataGroup);
-		return list;
-	}
-
-	@Override
 	public boolean shouldRefresh(DebugTool debugTool)
 	{
 		return debugTool.rayTraceResult.get().typeOfHit == Type.BLOCK && debugTool.rayTraceResult.hasChanged();
 	}
 
-	private static IGroup createBlockGroup(DebugTool tool)
+	private IGroup createBlockGroup(DebugTool tool)
 	{
 		RayTraceResult result = tool.rayTraceResult.get();
 		BlockPos pos = result.getBlockPos();
@@ -101,7 +91,7 @@ public class BlockCategory implements ICategory
 		return new Group("mdt.block.groupname", set);
 	}
 
-	private static IGroup createTileEntityGroup(DebugTool tool)
+	private IGroup createTileEntityGroup(DebugTool tool)
 	{
 		RayTraceResult result = tool.rayTraceResult.get();
 		TileEntity te = TileEntityUtils.getTileEntity(TileEntity.class, Utils.getClientWorld(), result.getBlockPos());
@@ -117,7 +107,7 @@ public class BlockCategory implements ICategory
 		return new Group("mdt.te.groupname", set);
 	}
 
-	private static IGroup createBlockDataGroup(DebugTool tool)
+	private IGroup createBlockDataGroup(DebugTool tool)
 	{
 		RayTraceResult result = tool.rayTraceResult.get();
 		BlockPos pos = result.getBlockPos();
