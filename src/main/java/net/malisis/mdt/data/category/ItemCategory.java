@@ -39,7 +39,6 @@ public class ItemCategory implements ICategory
 		Categories.registerCategory(this);
 		Categories.registerFactory(this, this::createItemGroup);
 		Categories.registerFactory(this, this::createItemStackGroup);
-
 	}
 
 	@Override

@@ -36,6 +36,9 @@ import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.component.GroupContainer;
 import net.malisis.mdt.gui.component.information.BlockStateComponent;
 import net.malisis.mdt.gui.component.information.InformationComponent;
+import net.malisis.mdt.gui.component.information.InformationComponent.BlockPosComponent;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 
 import com.google.common.collect.Maps;
 
@@ -46,11 +49,13 @@ import com.google.common.collect.Maps;
 public class ComponentProviders
 {
 	private static Map<String, BiFunction<DebugGui, IGroup, UIComponent<?>>> groupProviders = Maps.newHashMap();
-	private static Map<String, BiFunction<DebugGui, IInformation<?>, UIComponent<?>>> infoProviders = Maps.newHashMap();
+	private static Map<Object, BiFunction<DebugGui, ? extends IInformation<?>, UIComponent<?>>> infoProviders = Maps.newHashMap();
 
 	static
 	{
-		registerInformationProvider("mdt.block.blockstate", BlockStateComponent::new);
+		registerInformationProvider(BlockPos.class, BlockPosComponent::new);
+		registerInformationProvider(BlockPos.class, InformationComponent::blockPosComponent);
+		registerInformationProvider(IBlockState.class, BlockStateComponent::new);
 	}
 
 	public static void registerGroupProvider(String name, BiFunction<DebugGui, IGroup, UIComponent<?>> provider)
@@ -58,9 +63,9 @@ public class ComponentProviders
 		groupProviders.put(checkNotNull(name), checkNotNull(provider));
 	}
 
-	public static void registerInformationProvider(String name, BiFunction<DebugGui, IInformation<?>, UIComponent<?>> provider)
+	public static <T> void registerInformationProvider(Object key, BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>> provider)
 	{
-		infoProviders.put(checkNotNull(name), checkNotNull(provider));
+		infoProviders.put(checkNotNull(key), checkNotNull(provider));
 	}
 
 	public static UIComponent<?> getComponent(DebugGui gui, IGroup group)
@@ -70,6 +75,8 @@ public class ComponentProviders
 
 	public static UIComponent<?> getComponent(DebugGui gui, IInformation<?> information)
 	{
-		return Optional.ofNullable(infoProviders.get(information.getLabel())).orElse(InformationComponent::new).apply(gui, information);
+		return Optional.ofNullable(infoProviders.get(information.getLabel()))
+						.orElse(InformationComponent::defaultComponent)
+						.apply(gui, information);
 	}
 }

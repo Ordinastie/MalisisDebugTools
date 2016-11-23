@@ -83,11 +83,12 @@ public class BlockCategory implements ICategory
 
 		ItemStack is = state.getBlock().getPickBlock(state, result, Utils.getClientWorld(), pos, Utils.getClientPlayer());
 
-		Set<IInformation<?>> set = ImmutableSet.of(new Information<>("mdt.block.name", is.getDisplayName()), new Information<>(
-				"mdt.block.id", Block.getIdFromBlock(state.getBlock())), new Information<>("mdt.block.unlocname",
-				state.getBlock().getUnlocalizedName()), new Information<>("mdt.block.blockstate", state), new Information<>(
-				"mdt.block.metadata", state.getBlock().getMetaFromState(state)), new Information<>("mdt.block.position", pos.getX() + ", "
-				+ pos.getY() + ", " + pos.getZ()));
+		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.block.name", is.getDisplayName()),
+				Information.of("mdt.block.id", Block.getIdFromBlock(state.getBlock())),
+				Information.of("mdt.block.unlocname", state.getBlock().getUnlocalizedName()),
+				Information.of("mdt.block.blockstate", state),
+				Information.of("mdt.block.metadata", state.getBlock().getMetaFromState(state)),
+				Information.of("mdt.block.position", pos));
 		return new Group("mdt.block.groupname", set);
 	}
 
@@ -98,11 +99,11 @@ public class BlockCategory implements ICategory
 		if (te == null)
 			return null;
 
-		Set<IInformation<?>> set = ImmutableSet.of(new Information<>("mdt.te.type", te.getClass().getSimpleName()),
-				new Information<>("mdt.te.update", te instanceof ITickable),
-				new Information<>("mdt.te.inventory", te instanceof IInventory
-						|| te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)),
-				new Information<>("mdt.te.nbt", "NBT"));
+		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.te.type", te.getClass().getSimpleName()),
+				Information.of("mdt.te.update", te instanceof ITickable),
+				Information.of("mdt.te.inventory",
+						te instanceof IInventory || te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)),
+				Information.of("mdt.te.nbt", "NBT"));
 
 		return new Group("mdt.te.groupname", set);
 	}
@@ -117,7 +118,7 @@ public class BlockCategory implements ICategory
 		{
 			Object data = BlockDataHandler.getData(identifier, Utils.getClientWorld(), pos);
 			if (data != null)
-				set.add(new Information<>(identifier, data.toString()));
+				set.add(Information.of(identifier, data));
 		}
 
 		if (set.size() == 0)

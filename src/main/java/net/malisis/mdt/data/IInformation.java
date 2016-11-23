@@ -28,7 +28,6 @@ package net.malisis.mdt.data;
  * The Interface IInformation.
  *
  * @author Ordinastie
- * @param <T> Type of information
  */
 public interface IInformation<T>
 {
@@ -36,9 +35,5 @@ public interface IInformation<T>
 
 	public T getValue();
 
-	public default String getStringValue()
-	{
-		return getValue() != null ? getValue().toString() : " - ";
-	}
-
+	public Object getComponentKey();
 }

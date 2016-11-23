@@ -25,6 +25,8 @@
 package net.malisis.mdt.data.information;
 
 import net.malisis.mdt.data.IInformation;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @author Ordinastie
@@ -34,11 +36,13 @@ public class Information<T> implements IInformation<T>
 {
 	protected String label;
 	protected T value;
+	protected Object key;
 
-	public Information(String label, T value)
+	protected Information(String label, T value, Object key)
 	{
 		this.label = label;
 		this.value = value;
+		this.key = key;
 	}
 
 	@Override
@@ -51,5 +55,26 @@ public class Information<T> implements IInformation<T>
 	public T getValue()
 	{
 		return value;
+	}
+
+	@Override
+	public Object getComponentKey()
+	{
+		return key;
+	}
+
+	public static <T> Information<T> of(String label, T value)
+	{
+		return new Information<>(label, value, Information.class);
+	}
+
+	public static Information<BlockPos> of(String label, BlockPos pos)
+	{
+		return new Information<>(label, pos, BlockPos.class);
+	}
+
+	public static Information<IBlockState> of(String label, IBlockState state)
+	{
+		return new Information<>(label, state, BlockPos.class);
 	}
 }

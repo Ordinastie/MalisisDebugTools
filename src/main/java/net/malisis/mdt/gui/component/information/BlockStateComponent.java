@@ -27,6 +27,7 @@ package net.malisis.mdt.gui.component.information;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.DebugGui;
+import net.minecraft.block.state.IBlockState;
 
 /**
  * @author Ordinastie
@@ -35,7 +36,7 @@ import net.malisis.mdt.gui.DebugGui;
 public class BlockStateComponent extends UIContainer<BlockStateComponent>
 {
 
-	public BlockStateComponent(DebugGui gui, IInformation<?> information)
+	public BlockStateComponent(DebugGui gui, IInformation<IBlockState> information)
 	{
 		super(gui);
 	}

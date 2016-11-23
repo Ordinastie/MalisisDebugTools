@@ -24,6 +24,9 @@
 
 package net.malisis.mdt.gui.component.information;
 
+import java.util.Objects;
+import java.util.function.Function;
+
 import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
@@ -33,18 +36,19 @@ import net.malisis.core.renderer.font.FontOptions.FontOptionsBuilder;
 import net.malisis.core.renderer.font.MalisisFont;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.DebugGui;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * @author Ordinastie
  *
  */
-public class InformationComponent extends UIContainer<InformationComponent>
+public class InformationComponent<T> extends UIContainer<InformationComponent<T>>
 {
 	public static FontOptionsBuilder builder = FontOptions.builder();
 	protected UILabel label;
 	protected UILabel value;
 
-	public InformationComponent(DebugGui gui, IInformation<?> information)
+	private InformationComponent(DebugGui gui, IInformation<T> information, Function<T, String> toString)
 	{
 		super(gui);
 
@@ -55,7 +59,8 @@ public class InformationComponent extends UIContainer<InformationComponent>
 			valueColor = (boolean) v ? 0x33AA33 : 0x993333;
 
 		label = new UILabel(gui, information.getLabel()).setFontOptions(builder.color(labelColor).build());
-		value = new UILabel(gui, information.getStringValue()).setFontOptions(builder.color(valueColor).build()).setAnchor(Anchor.RIGHT);
+		value = new UILabel(gui, toString.apply(information.getValue())).setFontOptions(builder.color(valueColor).build())
+																		.setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 
@@ -67,5 +72,29 @@ public class InformationComponent extends UIContainer<InformationComponent>
 		}
 
 		setSize(UIComponent.INHERITED, h);
+	}
+
+	public static <T> InformationComponent<T> defaultComponent(DebugGui gui, IInformation<T> information)
+	{
+		return new InformationComponent<>(gui, information, o -> Objects.toString(o, " - "));
+	}
+
+	public static InformationComponent<BlockPos> blockPosComponent(DebugGui gui, IInformation<BlockPos> information)
+	{
+		Function<BlockPos, String> toString = p -> {
+			return p.getX() + ", " + p.getY() + ", " + p.getZ();
+		};
+
+		return new InformationComponent<>(gui, information, toString);
+	}
+
+	public static class BlockPosComponent extends InformationComponent<BlockPos>
+	{
+		public BlockPosComponent(DebugGui gui, IInformation<BlockPos> pos)
+		{
+			super(gui, pos, p -> {
+				return p.getX() + ", " + p.getY() + ", " + p.getZ();
+			});
+		}
 	}
 }
