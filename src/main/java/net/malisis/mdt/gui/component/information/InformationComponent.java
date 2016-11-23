@@ -74,18 +74,14 @@ public class InformationComponent<T> extends UIContainer<InformationComponent<T>
 		setSize(UIComponent.INHERITED, h);
 	}
 
+	public InformationComponent(DebugGui gui, IInformation<T> information)
+	{
+		this(gui, information, o -> Objects.toString(o, " - "));
+	}
+
 	public static <T> InformationComponent<T> defaultComponent(DebugGui gui, IInformation<T> information)
 	{
 		return new InformationComponent<>(gui, information, o -> Objects.toString(o, " - "));
-	}
-
-	public static InformationComponent<BlockPos> blockPosComponent(DebugGui gui, IInformation<BlockPos> information)
-	{
-		Function<BlockPos, String> toString = p -> {
-			return p.getX() + ", " + p.getY() + ", " + p.getZ();
-		};
-
-		return new InformationComponent<>(gui, information, toString);
 	}
 
 	public static class BlockPosComponent extends InformationComponent<BlockPos>

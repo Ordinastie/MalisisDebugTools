@@ -54,7 +54,6 @@ public class ComponentProviders
 	static
 	{
 		registerInformationProvider(BlockPos.class, BlockPosComponent::new);
-		registerInformationProvider(BlockPos.class, InformationComponent::blockPosComponent);
 		registerInformationProvider(IBlockState.class, BlockStateComponent::new);
 	}
 
@@ -73,10 +72,15 @@ public class ComponentProviders
 		return Optional.ofNullable(groupProviders.get(group.getName())).orElse(GroupContainer::new).apply(gui, group);
 	}
 
-	public static UIComponent<?> getComponent(DebugGui gui, IInformation<?> information)
+	@SuppressWarnings("unchecked")
+	private static <T> BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>> getInformationProvider(IInformation<T> information)
 	{
-		return Optional.ofNullable(infoProviders.get(information.getLabel()))
-						.orElse(InformationComponent::defaultComponent)
-						.apply(gui, information);
+		return (BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>>) infoProviders.get(information.getComponentKey());
+	}
+
+	public static <T> UIComponent<?> getComponent(DebugGui gui, IInformation<T> information)
+	{
+		Optional<BiFunction<DebugGui, IInformation<T>, UIComponent<?>>> o = Optional.ofNullable(getInformationProvider(information));
+		return o.orElse(InformationComponent<T>::new).apply(gui, information);
 	}
 }
