@@ -31,7 +31,6 @@ import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.KeyBindings;
 import net.malisis.mdt.data.IGroup;
-import net.malisis.mdt.data.category.Categories;
 import net.malisis.mdt.gui.component.DebugWindow;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.common.MinecraftForge;
@@ -72,6 +71,7 @@ public class DebugGui extends MalisisGui
 		if (getComponentAt(x, y) != null)
 			super.mouseClicked(x, y, button);
 		else
+			//clicked outside the window overlay takes over
 			close();
 	}
 
@@ -118,7 +118,7 @@ public class DebugGui extends MalisisGui
 
 		window.removeAll();
 		int h = 10;
-		List<IGroup> groups = Categories.generateGroups(tool, tool.getCurrentCategory());
+		List<IGroup> groups = tool.getCurrentCategory().generateGroups(tool);
 		for (IGroup group : groups)
 		{
 			UIComponent<?> component = ComponentProviders.getComponent(this, group);

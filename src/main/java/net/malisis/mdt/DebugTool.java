@@ -24,9 +24,6 @@
 
 package net.malisis.mdt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.cacheddata.CachedEquippedItem;
 import net.malisis.mdt.data.cacheddata.CachedRayTraceResult;
@@ -48,9 +45,8 @@ public class DebugTool
 	public CachedRayTraceResult rayTraceResult = new CachedRayTraceResult();
 	public CachedEquippedItem equippedItem = new CachedEquippedItem();
 
-	private List<ICategory> categories = new ArrayList<>();
-	private ICategory currentCategory;
-	private boolean categoryChanged = false;
+	private ICategory currentCategory = Categories.BLOCK;
+	private boolean categoryChanged = true;
 
 	private int mouseLastPosX = Display.getWidth() / 2;
 	private int mouseLastPosY = Display.getHeight() / 2;
@@ -60,8 +56,6 @@ public class DebugTool
 	private DebugTool()
 	{
 		debugGui = new DebugGui(this);
-		setCurrentCategory(Categories.BLOCK_CATEGORY);
-
 	}
 
 	public ICategory getCurrentCategory()
@@ -71,8 +65,9 @@ public class DebugTool
 
 	public boolean shouldRefresh()
 	{
+		boolean b = categoryChanged || currentCategory.shouldRefresh(this);
 		categoryChanged = false;
-		return categoryChanged || currentCategory.shouldRefresh(this);
+		return b;
 	}
 
 	private void setActive(boolean active)

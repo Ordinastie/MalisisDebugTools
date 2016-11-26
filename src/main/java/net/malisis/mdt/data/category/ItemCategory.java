@@ -25,6 +25,7 @@
 package net.malisis.mdt.data.category;
 
 import net.malisis.mdt.DebugTool;
+import net.malisis.mdt.MDTRegistry;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.IGroup;
 
@@ -36,9 +37,9 @@ public class ItemCategory implements ICategory
 {
 	public ItemCategory()
 	{
-		Categories.registerCategory(this);
-		Categories.registerFactory(this, this::createItemGroup);
-		Categories.registerFactory(this, this::createItemStackGroup);
+		MDTRegistry.registerCategory(this);
+		MDTRegistry.registerFactory(this, this::createItemGroup);
+		MDTRegistry.registerFactory(this, this::createItemStackGroup);
 	}
 
 	@Override

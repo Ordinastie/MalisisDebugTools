@@ -24,12 +24,18 @@
 
 package net.malisis.mdt.data.category;
 
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
+import net.malisis.core.renderer.IAnimatedRenderable;
+import net.malisis.core.renderer.component.AnimatedModelComponent;
 import net.malisis.core.util.TileEntityUtils;
+import net.malisis.core.util.Timer;
 import net.malisis.core.util.Utils;
 import net.malisis.core.util.blockdata.BlockDataHandler;
 import net.malisis.mdt.DebugTool;
+import net.malisis.mdt.MDTRegistry;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.IGroup;
 import net.malisis.mdt.data.IInformation;
@@ -44,6 +50,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import com.google.common.collect.ImmutableSet;
@@ -57,10 +64,10 @@ public class BlockCategory implements ICategory
 {
 	public BlockCategory()
 	{
-		Categories.registerCategory(this);
-		Categories.registerFactory(this, this::createBlockGroup);
-		Categories.registerFactory(this, this::createTileEntityGroup);
-		Categories.registerFactory(this, this::createBlockDataGroup);
+		MDTRegistry.registerFactory(this, this::createBlockGroup);
+		MDTRegistry.registerFactory(this, this::createTileEntityGroup);
+		MDTRegistry.registerFactory(this, this::createBlockDataGroup);
+		MDTRegistry.registerFactory(this, this::createAnimationGroup);
 	}
 
 	@Override
@@ -79,16 +86,17 @@ public class BlockCategory implements ICategory
 	{
 		RayTraceResult result = tool.rayTraceResult.get();
 		BlockPos pos = result.getBlockPos();
-		IBlockState state = Utils.getClientWorld().getBlockState(pos);
+		IBlockState state = Utils.getClientWorld().getBlockState(pos).getActualState(Utils.getClientWorld(), pos);
 
 		ItemStack is = state.getBlock().getPickBlock(state, result, Utils.getClientWorld(), pos, Utils.getClientPlayer());
 
 		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.block.name", is.getDisplayName()),
 				Information.of("mdt.block.id", Block.getIdFromBlock(state.getBlock())),
+				Information.of("mdt.block.registryname", Block.REGISTRY.getNameForObject(state.getBlock())),
 				Information.of("mdt.block.unlocname", state.getBlock().getUnlocalizedName()),
+				Information.of("mdt.block.position", pos),
 				Information.of("mdt.block.blockstate", state),
-				Information.of("mdt.block.metadata", state.getBlock().getMetaFromState(state)),
-				Information.of("mdt.block.position", pos));
+				Information.of("mdt.block.metadata", state.getBlock().getMetaFromState(state)));
 		return new Group("mdt.block.groupname", set);
 	}
 
@@ -125,5 +133,29 @@ public class BlockCategory implements ICategory
 			return null;
 
 		return new Group("mdt.blockdata.groupname", set);
+	}
+
+	private IGroup createAnimationGroup(DebugTool tool)
+	{
+		BlockPos pos = tool.rayTraceResult.get().getBlockPos();
+		IBlockState state = Utils.getClientWorld().getBlockState(pos).getActualState(Utils.getClientWorld(), pos);
+		AnimatedModelComponent amc = AnimatedModelComponent.get(state.getBlock());
+		if (amc == null)
+			return null;
+		Optional<IAnimatedRenderable> o = amc.getRenderable(pos);
+		if (!o.isPresent())
+			return null;
+
+		Set<IInformation<?>> set = Sets.newLinkedHashSet();
+		for (Entry<String, Timer> entry : o.get().getTimers().entrySet())
+		{
+			Timer t = entry.getValue();
+			set.add(Information.of(entry.getKey(), (t.elapsedTime() > 0 ? TextFormatting.GREEN : TextFormatting.RED) + t.toString()));
+		}
+
+		if (set.size() == 0)
+			return null;
+
+		return new Group("mdt.animation.groupname", set);
 	}
 }

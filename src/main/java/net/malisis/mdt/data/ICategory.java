@@ -24,7 +24,12 @@
 
 package net.malisis.mdt.data;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import net.malisis.mdt.DebugTool;
+import net.malisis.mdt.MDTRegistry;
 
 /**
  * @author Ordinastie
@@ -35,4 +40,9 @@ public interface ICategory
 	public String getName();
 
 	public boolean shouldRefresh(DebugTool tool);
+
+	public default List<IGroup> generateGroups(DebugTool tool)
+	{
+		return MDTRegistry.getFactories(this).stream().map(f -> f.apply(tool)).filter(Objects::nonNull).collect(Collectors.toList());
+	}
 }

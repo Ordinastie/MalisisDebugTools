@@ -35,5 +35,8 @@ public interface IInformation<T>
 
 	public T getValue();
 
-	public Object getComponentKey();
+	public default Object getComponentKey()
+	{
+		return getValue() != null ? getValue().getClass() : null;
+	}
 }

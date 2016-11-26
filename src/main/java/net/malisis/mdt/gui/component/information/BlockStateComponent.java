@@ -24,10 +24,23 @@
 
 package net.malisis.mdt.gui.component.information;
 
+import java.util.List;
+import java.util.Map.Entry;
+
+import net.malisis.core.client.gui.Anchor;
+import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
+import net.malisis.core.client.gui.component.decoration.UILabel;
+import net.malisis.core.renderer.font.FontOptions;
+import net.malisis.core.renderer.font.FontOptions.FontOptionsBuilder;
+import net.malisis.core.renderer.font.MalisisFont;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.DebugGui;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.text.TextFormatting;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Ordinastie
@@ -35,9 +48,44 @@ import net.minecraft.block.state.IBlockState;
  */
 public class BlockStateComponent extends UIContainer<BlockStateComponent>
 {
+	public static FontOptionsBuilder builder = FontOptions.builder();
+	protected UILabel label;
+	protected List<UILabel> values = Lists.newArrayList();
 
 	public BlockStateComponent(DebugGui gui, IInformation<IBlockState> information)
 	{
 		super(gui);
+
+		int labelColor = 0xAAAAFF;
+		int valueColor = 0xFFFFFF;
+		label = new UILabel(gui, information.getLabel()).setFontOptions(builder.color(labelColor).build());
+		add(label);
+
+		IBlockState state = information.getValue();
+		int y = 0;
+		boolean first = true;
+		int h = (int) MalisisFont.minecraftFont.getStringHeight() + 2;
+		for (Entry<IProperty<?>, Comparable<?>> entry : state.getProperties().entrySet())
+		{
+			String s = getPropertyString(entry.getKey(), entry.getValue());
+			UILabel value = new UILabel(gui, s).setFontOptions(builder.color(valueColor).build());
+			if (first && label.getWidth() + value.getWidth() > gui.getWindowWidth())
+				y += h;
+			value.setPosition(0, y, Anchor.RIGHT);
+			add(value);
+			first = false;
+			y += h;
+		}
+
+		setSize(UIComponent.INHERITED, y);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends Comparable<T>> String getPropertyString(IProperty<T> property, Comparable<?> value)
+	{
+		String s = property.getName((T) value);
+		if (value instanceof Boolean)
+			s = ((boolean) value ? TextFormatting.GREEN : TextFormatting.RED) + s;
+		return property.getName() + " = " + s;
 	}
 }

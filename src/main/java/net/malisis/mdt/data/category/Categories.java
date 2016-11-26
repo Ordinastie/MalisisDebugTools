@@ -24,19 +24,7 @@
 
 package net.malisis.mdt.data.category;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import net.malisis.mdt.DebugTool;
-import net.malisis.mdt.data.ICategory;
-import net.malisis.mdt.data.IGroup;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
+import net.malisis.mdt.MDTRegistry;
 
 /**
  * @author Ordinastie
@@ -44,27 +32,12 @@ import com.google.common.collect.Sets;
  */
 public class Categories
 {
-	private static Set<ICategory> categories = Sets.newHashSet();
-	private static Multimap<ICategory, Function<DebugTool, IGroup>> factories = ArrayListMultimap.create();
-
-	public static final ICategory BLOCK_CATEGORY = new BlockCategory();
-	public static final ICategory ITEM_CATEGORY = new ItemCategory();
+	public static final BlockCategory BLOCK = new BlockCategory();
+	public static final ItemCategory ITEM = new ItemCategory();
 
 	static
-	{}
-
-	public static void registerCategory(ICategory category)
 	{
-		categories.add(category);
-	}
-
-	public static void registerFactory(ICategory category, Function<DebugTool, IGroup> factory)
-	{
-		factories.put(category, factory);
-	}
-
-	public static List<IGroup> generateGroups(DebugTool debugTool, ICategory category)
-	{
-		return factories.get(category).stream().map(f -> f.apply(debugTool)).filter(Objects::nonNull).collect(Collectors.toList());
+		MDTRegistry.registerCategory(Categories.BLOCK);
+		MDTRegistry.registerCategory(Categories.ITEM);
 	}
 }

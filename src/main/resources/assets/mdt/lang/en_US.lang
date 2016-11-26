@@ -2,6 +2,7 @@ mdt.commands.usage=Use /mdt [toggle/activate/deactivate]
 
 mdt.block.groupname=Block
 mdt.block.name=Localized name
+mdt.block.registryname=Registry name
 mdt.block.unlocname=Unlocalized name
 mdt.block.id=Internal ID
 mdt.block.metadata=Metadata
@@ -14,3 +15,4 @@ mdt.te.inventory=Has inventory
 mdt.te.nbt=NBT
 
 mdt.blockdata.groupname=Block Data
+mdt.animation.groupname=Animations

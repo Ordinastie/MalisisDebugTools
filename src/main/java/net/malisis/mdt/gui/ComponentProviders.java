@@ -31,14 +31,13 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import net.malisis.core.client.gui.component.UIComponent;
+import net.malisis.core.util.InheritanceClassMap;
 import net.malisis.mdt.data.IGroup;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.component.GroupContainer;
 import net.malisis.mdt.gui.component.information.BlockStateComponent;
 import net.malisis.mdt.gui.component.information.InformationComponent;
-import net.malisis.mdt.gui.component.information.InformationComponent.BlockPosComponent;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
 
 import com.google.common.collect.Maps;
 
@@ -49,11 +48,11 @@ import com.google.common.collect.Maps;
 public class ComponentProviders
 {
 	private static Map<String, BiFunction<DebugGui, IGroup, UIComponent<?>>> groupProviders = Maps.newHashMap();
-	private static Map<Object, BiFunction<DebugGui, ? extends IInformation<?>, UIComponent<?>>> infoProviders = Maps.newHashMap();
+	private static Map<Class<?>, BiFunction<DebugGui, ? extends IInformation<?>, UIComponent<?>>> infoProviders = new InheritanceClassMap<>(
+			Maps.newHashMap());
 
 	static
 	{
-		registerInformationProvider(BlockPos.class, BlockPosComponent::new);
 		registerInformationProvider(IBlockState.class, BlockStateComponent::new);
 	}
 
@@ -62,7 +61,7 @@ public class ComponentProviders
 		groupProviders.put(checkNotNull(name), checkNotNull(provider));
 	}
 
-	public static <T> void registerInformationProvider(Object key, BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>> provider)
+	public static <T> void registerInformationProvider(Class<?> key, BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>> provider)
 	{
 		infoProviders.put(checkNotNull(key), checkNotNull(provider));
 	}

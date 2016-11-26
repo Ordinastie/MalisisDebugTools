@@ -34,9 +34,9 @@ import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.renderer.font.FontOptions;
 import net.malisis.core.renderer.font.FontOptions.FontOptionsBuilder;
 import net.malisis.core.renderer.font.MalisisFont;
+import net.malisis.mdt.MDTRegistry;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.DebugGui;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * @author Ordinastie
@@ -58,9 +58,10 @@ public class InformationComponent<T> extends UIContainer<InformationComponent<T>
 		if (v instanceof Boolean)
 			valueColor = (boolean) v ? 0x33AA33 : 0x993333;
 
+		String stringValue = MDTRegistry.getInformationOutput(information).apply(information.getValue());
+
 		label = new UILabel(gui, information.getLabel()).setFontOptions(builder.color(labelColor).build());
-		value = new UILabel(gui, toString.apply(information.getValue())).setFontOptions(builder.color(valueColor).build())
-																		.setAnchor(Anchor.RIGHT);
+		value = new UILabel(gui, stringValue).setFontOptions(builder.color(valueColor).build()).setAnchor(Anchor.RIGHT);
 		add(label);
 		add(value);
 
@@ -82,15 +83,5 @@ public class InformationComponent<T> extends UIContainer<InformationComponent<T>
 	public static <T> InformationComponent<T> defaultComponent(DebugGui gui, IInformation<T> information)
 	{
 		return new InformationComponent<>(gui, information, o -> Objects.toString(o, " - "));
-	}
-
-	public static class BlockPosComponent extends InformationComponent<BlockPos>
-	{
-		public BlockPosComponent(DebugGui gui, IInformation<BlockPos> pos)
-		{
-			super(gui, pos, p -> {
-				return p.getX() + ", " + p.getY() + ", " + p.getZ();
-			});
-		}
 	}
 }

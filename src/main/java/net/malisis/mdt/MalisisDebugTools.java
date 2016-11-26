@@ -91,6 +91,7 @@ public class MalisisDebugTools implements IMalisisMod
 		new MdtBlock().register();
 		new KeyBindings();
 		log = event.getModLog();
+
 		ModMessageManager.register(instance, new AABBRenderer());
 	}
 
