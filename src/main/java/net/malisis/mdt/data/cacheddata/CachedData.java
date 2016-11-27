@@ -50,7 +50,7 @@ public class CachedData<T>
 
 	public CachedData(Supplier<T> getter)
 	{
-		this(getter, (t1, t2) -> Objects.equals(t1, t2));
+		this(getter, Objects::equals);
 	}
 
 	public T get()
