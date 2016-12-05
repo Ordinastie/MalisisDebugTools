@@ -90,7 +90,7 @@ public class BlockCategory implements ICategory
 
 		ItemStack is = state.getBlock().getPickBlock(state, result, Utils.getClientWorld(), pos, Utils.getClientPlayer());
 
-		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.block.name", is.getDisplayName()),
+		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.block.name", is != null ? is.getDisplayName() : " - "),
 				Information.of("mdt.block.id", Block.getIdFromBlock(state.getBlock())),
 				Information.of("mdt.block.registryname", Block.REGISTRY.getNameForObject(state.getBlock())),
 				Information.of("mdt.block.unlocname", state.getBlock().getUnlocalizedName()),
