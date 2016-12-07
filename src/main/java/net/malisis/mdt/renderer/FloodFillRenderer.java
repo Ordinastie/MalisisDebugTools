@@ -24,13 +24,20 @@
 
 package net.malisis.mdt.renderer;
 
+import java.util.Set;
+
 import net.malisis.core.renderer.MalisisRenderer;
 import net.malisis.core.renderer.RenderParameters;
 import net.malisis.core.renderer.element.Shape;
 import net.malisis.core.renderer.element.shape.Cube;
+import net.malisis.core.util.AABBUtils;
+import net.malisis.core.util.floodfill.FloodFill;
 import net.malisis.core.util.modmessage.ModMessage;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
@@ -40,29 +47,24 @@ import org.lwjgl.opengl.GL11;
  * @author Ordinastie
  *
  */
-public class AABBRenderer extends MalisisRenderer<TileEntity>
+public class FloodFillRenderer extends MalisisRenderer<TileEntity>
 {
-	private AxisAlignedBB aabb;
-	private int color;
-	private int delay;
+	private FloodFill floodFill = null;
 	private Shape cube = new Cube();
+	private int parsedColor;
+	private int toParseColor;
+	private int parsedLimit;
 	private RenderParameters rp = new RenderParameters();
 
-	public AABBRenderer()
+	public FloodFillRenderer()
 	{
 		registerForRenderWorldLast();
 	}
 
 	@Override
-	protected void initialize()
-	{
-		delay = delay++;
-	}
-
-	@Override
 	public boolean shouldRender(RenderWorldLastEvent event, IBlockAccess world)
 	{
-		return aabb != null;
+		return floodFill != null;
 	}
 
 	@Override
@@ -70,19 +72,36 @@ public class AABBRenderer extends MalisisRenderer<TileEntity>
 	{
 		next(GL11.GL_LINE_LOOP);
 		disableTextures();
-		cube.resetState();
+		GlStateManager.disableDepth();
+		rp.colorMultiplier.set(toParseColor);
 
-		cube.setBounds(aabb);
+		ICamera camera = new Frustum();
 
-		rp.colorMultiplier.set(color);
-		drawShape(cube, rp);
+		floodFill.getToProcess().stream().filter(p -> camera.isBoundingBoxInFrustum(AABBUtils.identity(p))).forEach(p -> {
+			cube.resetState();
+			cube.translate(p.getX(), p.getY(), p.getZ());
+			drawShape(cube, rp);
+		});
+
+		rp.colorMultiplier.set(parsedColor);
+		Set<BlockPos> parsed = floodFill.getProcessed();
+		if (parsed.size() < parsedLimit)
+			parsed.stream().filter(p -> camera.isBoundingBoxInFrustum(AABBUtils.identity(p))).forEach(p -> {
+				cube.resetState();
+				cube.translate(p.getX(), p.getY(), p.getZ());
+				drawShape(cube, rp);
+			});
+
+		next();
+		GlStateManager.enableDepth();
 	}
 
-	@ModMessage("renderAABB")
-	public void set(AxisAlignedBB aabb, int color, int delay)
+	@ModMessage("renderFloodfill")
+	public void set(FloodFill floodFill, int parsedColor, int toParseColor, int parsedLimit)
 	{
-		this.aabb = aabb;
-		this.color = color;
-		this.delay = delay;
+		this.floodFill = floodFill;
+		this.parsedColor = parsedColor;
+		this.toParseColor = toParseColor;
+		this.parsedLimit = parsedLimit;
 	}
 }

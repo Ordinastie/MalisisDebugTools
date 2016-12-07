@@ -30,6 +30,8 @@ import net.malisis.core.configuration.Settings;
 import net.malisis.core.util.modmessage.ModMessageManager;
 import net.malisis.mdt.block.MdtBlock;
 import net.malisis.mdt.renderer.AABBRenderer;
+import net.malisis.mdt.renderer.BlockMarkerRenderer;
+import net.malisis.mdt.renderer.FloodFillRenderer;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -93,6 +95,8 @@ public class MalisisDebugTools implements IMalisisMod
 		log = event.getModLog();
 
 		ModMessageManager.register(instance, new AABBRenderer());
+		ModMessageManager.register(instance, new FloodFillRenderer());
+		ModMessageManager.register(instance, new BlockMarkerRenderer());
 	}
 
 	@EventHandler

@@ -24,13 +24,21 @@
 
 package net.malisis.mdt.renderer;
 
+import java.util.Set;
+import java.util.function.Function;
+
 import net.malisis.core.renderer.MalisisRenderer;
 import net.malisis.core.renderer.RenderParameters;
 import net.malisis.core.renderer.element.Shape;
 import net.malisis.core.renderer.element.shape.Cube;
+import net.malisis.core.util.AABBUtils;
 import net.malisis.core.util.modmessage.ModMessage;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 
@@ -40,29 +48,24 @@ import org.lwjgl.opengl.GL11;
  * @author Ordinastie
  *
  */
-public class AABBRenderer extends MalisisRenderer<TileEntity>
+public class BlockMarkerRenderer extends MalisisRenderer<TileEntity>
 {
-	private AxisAlignedBB aabb;
-	private int color;
-	private int delay;
 	private Shape cube = new Cube();
 	private RenderParameters rp = new RenderParameters();
 
-	public AABBRenderer()
+	private Set<BlockPos> positions;
+	private int color;
+	private Function<IBlockState, Integer> colorGetter;
+
+	public BlockMarkerRenderer()
 	{
 		registerForRenderWorldLast();
 	}
 
 	@Override
-	protected void initialize()
-	{
-		delay = delay++;
-	}
-
-	@Override
 	public boolean shouldRender(RenderWorldLastEvent event, IBlockAccess world)
 	{
-		return aabb != null;
+		return positions != null && positions.size() > 0;
 	}
 
 	@Override
@@ -70,19 +73,38 @@ public class AABBRenderer extends MalisisRenderer<TileEntity>
 	{
 		next(GL11.GL_LINE_LOOP);
 		disableTextures();
-		cube.resetState();
+		GlStateManager.disableDepth();
 
-		cube.setBounds(aabb);
+		if (colorGetter == null)
+			rp.colorMultiplier.set(color);
 
-		rp.colorMultiplier.set(color);
-		drawShape(cube, rp);
+		ICamera camera = new Frustum();
+
+		positions.stream().filter(p -> camera.isBoundingBoxInFrustum(AABBUtils.identity(p))).forEach(p -> {
+			if (colorGetter != null)
+				rp.colorMultiplier.set(colorGetter.apply(world.getBlockState(p)));
+			cube.resetState();
+			cube.translate(p.getX(), p.getY(), p.getZ());
+			drawShape(cube, rp);
+		});
+
+		next();
+		GlStateManager.enableDepth();
 	}
 
-	@ModMessage("renderAABB")
-	public void set(AxisAlignedBB aabb, int color, int delay)
+	@ModMessage("markBlocks")
+	public void set(Set<BlockPos> positions, int color)
 	{
-		this.aabb = aabb;
+		this.positions = positions;
 		this.color = color;
-		this.delay = delay;
+		this.colorGetter = null;
 	}
+
+	@ModMessage("markBlocks")
+	public void set(Set<BlockPos> positions, Function<IBlockState, Integer> colorGetter)
+	{
+		this.positions = positions;
+		this.colorGetter = colorGetter;
+	}
+
 }
