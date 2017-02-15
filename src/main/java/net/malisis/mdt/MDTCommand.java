@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.malisis.core.MalisisCore;
+import net.malisis.mdt.atlas.MDTTextureGui;
 import net.malisis.mdt.block.MdtBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
