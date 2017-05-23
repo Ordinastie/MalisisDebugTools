@@ -24,11 +24,13 @@
 
 package net.malisis.mdt.atlas;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.lwjgl.opengl.GL11;
 
+import net.malisis.core.MalisisCore;
 import net.malisis.core.asm.AsmUtils;
 import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
@@ -36,7 +38,6 @@ import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.renderer.icon.Icon;
 import net.malisis.core.util.MouseButton;
 import net.malisis.core.util.Point;
-import net.malisis.core.util.Silenced;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -45,13 +46,26 @@ import net.minecraft.client.renderer.texture.TextureMap;
  * @author Ordinastie
  *
  */
+@SuppressWarnings("unchecked")
 public class AtlasComponent extends UIContainer<AtlasComponent>
 {
-	@SuppressWarnings("unchecked")
-	private final Map<String, TextureAtlasSprite> ICONS = (Map<String, TextureAtlasSprite>) Silenced.get(() -> AsmUtils	.changeFieldAccess(	TextureMap.class,
-																																			"mapRegisteredSprites")
-																														.get(Minecraft	.getMinecraft()
-																																		.getTextureMapBlocks()));
+	private static Map<String, TextureAtlasSprite> ICONS;
+
+	static
+	{
+		try
+		{
+			Field field = AsmUtils.changeFieldAccess(TextureMap.class, "mapRegisteredSprites", "field_110574_e");
+			TextureMap map = Minecraft.getMinecraft().getTextureMapBlocks();
+
+			ICONS = (Map<String, TextureAtlasSprite>) field.get(map);
+		}
+		catch (ReflectiveOperationException e)
+		{
+			MalisisCore.log.error("Failed to get TextureMap.mapRegisteredSprites field : ", e);
+		}
+	}
+
 	private float factor = -1;
 	private int px = 0;
 	private int py = 0;

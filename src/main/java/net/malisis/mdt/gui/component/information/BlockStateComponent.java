@@ -27,6 +27,8 @@ package net.malisis.mdt.gui.component.information;
 import java.util.List;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
+
 import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.client.gui.component.container.UIContainer;
@@ -39,8 +41,6 @@ import net.malisis.mdt.gui.DebugGui;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.text.TextFormatting;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Ordinastie
@@ -85,7 +85,7 @@ public class BlockStateComponent extends UIContainer<BlockStateComponent>
 	{
 		String s = property.getName((T) value);
 		if (value instanceof Boolean)
-			s = ((boolean) value ? TextFormatting.GREEN : TextFormatting.RED) + s;
+			s = ((Boolean) value ? TextFormatting.GREEN : TextFormatting.RED) + s;
 		return property.getName() + " = " + s;
 	}
 }
