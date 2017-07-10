@@ -27,8 +27,9 @@ package net.malisis.mdt.atlas;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.helpers.Strings;
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.base.Strings;
 
 import net.malisis.core.MalisisCore;
 import net.malisis.core.asm.AsmUtils;
@@ -214,7 +215,7 @@ public class AtlasComponent extends UIContainer<AtlasComponent>
 	{
 		if (ICONS == null)
 			return;
-		if (Strings.isEmpty(filter))
+		if (Strings.isNullOrEmpty(filter))
 			return;
 
 		renderer.next();
