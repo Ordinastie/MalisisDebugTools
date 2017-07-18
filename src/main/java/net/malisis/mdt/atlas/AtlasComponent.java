@@ -147,12 +147,7 @@ public class AtlasComponent extends UIContainer<AtlasComponent>
 	@Override
 	public void drawBackground(GuiRenderer renderer, int mouseX, int mouseY, float partialTick)
 	{
-		renderer.disableTextures();
-
-		rp.colorMultiplier.set(0x666666);
-		shape.resetState();
-		shape.setSize(getWidth(), getHeight());
-		renderer.drawShape(shape, rp);
+		renderer.drawRectangle(0, 0, 0, getWidth(), getHeight(), 0x666666, 255);
 	}
 
 	@Override
@@ -176,15 +171,7 @@ public class AtlasComponent extends UIContainer<AtlasComponent>
 
 	private void drawAtlas(GuiRenderer renderer, int w, int h)
 	{
-		rp.colorMultiplier.reset();
-
-		shape.resetState();
-		shape.setSize(w, h);
-		//shape.setSize(150, 150);
-		shape.setPosition(px, py);
-		renderer.drawShape(shape, rp);
-		renderer.next();
-		renderer.enableTextures();
+		renderer.drawRectangle(px, py, 0, w, h, 0xFFFFFF, 0xFF);
 
 		renderer.bindTexture(MalisisGui.BLOCK_TEXTURE);
 		shape.resetState();
