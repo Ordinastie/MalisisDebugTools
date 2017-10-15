@@ -24,6 +24,8 @@
 
 package net.malisis.mdt.renderer;
 
+import org.lwjgl.opengl.GL11;
+
 import net.malisis.core.renderer.MalisisRenderer;
 import net.malisis.core.renderer.RenderParameters;
 import net.malisis.core.renderer.element.Shape;
@@ -33,8 +35,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Ordinastie
@@ -76,6 +76,8 @@ public class AABBRenderer extends MalisisRenderer<TileEntity>
 
 		rp.colorMultiplier.set(color);
 		drawShape(cube, rp);
+		next(GL11.GL_QUADS);
+		enableTextures();
 	}
 
 	@ModMessage("renderAABB")
