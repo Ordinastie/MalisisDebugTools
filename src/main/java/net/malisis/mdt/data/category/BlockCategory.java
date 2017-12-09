@@ -28,19 +28,26 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+
 import net.malisis.core.renderer.IAnimatedRenderable;
 import net.malisis.core.renderer.component.AnimatedModelComponent;
 import net.malisis.core.util.TileEntityUtils;
 import net.malisis.core.util.Timer;
 import net.malisis.core.util.Utils;
 import net.malisis.core.util.blockdata.BlockDataHandler;
+import net.malisis.core.util.multiblock.MultiBlock;
+import net.malisis.core.util.multiblock.MultiBlockComponent;
 import net.malisis.mdt.DebugTool;
 import net.malisis.mdt.MDTRegistry;
 import net.malisis.mdt.data.ICategory;
 import net.malisis.mdt.data.IGroup;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.data.group.Group;
+import net.malisis.mdt.data.information.Action;
 import net.malisis.mdt.data.information.Information;
+import net.malisis.mdt.renderer.MultiBlockRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.ITickable;
@@ -52,9 +59,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.items.CapabilityItemHandler;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 /**
  * @author Ordinastie
@@ -68,6 +72,7 @@ public class BlockCategory implements ICategory
 		MDTRegistry.registerFactory(this, this::createTileEntityGroup);
 		MDTRegistry.registerFactory(this, this::createBlockDataGroup);
 		MDTRegistry.registerFactory(this, this::createAnimationGroup);
+		MDTRegistry.registerFactory(this, this::createMultiBlockGroup);
 	}
 
 	@Override
@@ -90,13 +95,14 @@ public class BlockCategory implements ICategory
 
 		ItemStack is = state.getBlock().getPickBlock(state, result, Utils.getClientWorld(), pos, Utils.getClientPlayer());
 
-		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.block.name", is != null ? is.getDisplayName() : " - "),
-				Information.of("mdt.block.id", Block.getIdFromBlock(state.getBlock())),
-				Information.of("mdt.block.registryname", Block.REGISTRY.getNameForObject(state.getBlock())),
-				Information.of("mdt.block.unlocname", state.getBlock().getUnlocalizedName()),
-				Information.of("mdt.block.position", pos),
-				Information.of("mdt.block.blockstate", state),
-				Information.of("mdt.block.metadata", state.getBlock().getMetaFromState(state)));
+		Set<IInformation<?>> set = ImmutableSet.of(	Information.of("mdt.block.name", is != null ? is.getDisplayName() : " - "),
+													Information.of("mdt.block.id", Block.getIdFromBlock(state.getBlock())),
+													Information.of(	"mdt.block.registryname",
+																	Block.REGISTRY.getNameForObject(state.getBlock())),
+													Information.of("mdt.block.unlocname", state.getBlock().getUnlocalizedName()),
+													Information.of("mdt.block.position", pos),
+													Information.of("mdt.block.blockstate", state),
+													Information.of("mdt.block.metadata", state.getBlock().getMetaFromState(state)));
 		return new Group("mdt.block.groupname", set);
 	}
 
@@ -107,11 +113,13 @@ public class BlockCategory implements ICategory
 		if (te == null)
 			return null;
 
-		Set<IInformation<?>> set = ImmutableSet.of(Information.of("mdt.te.type", te.getClass().getSimpleName()),
-				Information.of("mdt.te.update", te instanceof ITickable),
-				Information.of("mdt.te.inventory",
-						te instanceof IInventory || te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)),
-				Information.of("mdt.te.nbt", "NBT"));
+		Set<IInformation<?>> set = ImmutableSet.of(	Information.of("mdt.te.type", te.getClass().getSimpleName()),
+													Information.of("mdt.te.update", te instanceof ITickable),
+													Information.of(	"mdt.te.inventory",
+																	te instanceof IInventory
+																			|| te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+																								null)),
+													Information.of("mdt.te.nbt", "NBT"));
 
 		return new Group("mdt.te.groupname", set);
 	}
@@ -157,5 +165,18 @@ public class BlockCategory implements ICategory
 			return null;
 
 		return new Group("mdt.animation.groupname", set);
+	}
+
+	private IGroup createMultiBlockGroup(DebugTool tool)
+	{
+		BlockPos pos = tool.rayTraceResult.get().getBlockPos();
+		IBlockState state = Utils.getClientWorld().getBlockState(pos).getActualState(Utils.getClientWorld(), pos);
+		MultiBlock mb = MultiBlockComponent.getMultiBlock(Utils.getClientWorld(), pos, state, null);
+		if (mb == null)
+			return null;
+
+		BlockPos origin = MultiBlock.getOrigin(Utils.getClientWorld(), pos);
+		Action<MultiBlock> action = Action.of("mdt.multiblock.render", mb, m -> MultiBlockRenderer.toggle(m, origin));
+		return new Group("mdt.multiblock.groupname", ImmutableSet.of(action));
 	}
 }

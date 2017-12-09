@@ -30,16 +30,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
+import com.google.common.collect.Maps;
+
 import net.malisis.core.client.gui.component.UIComponent;
 import net.malisis.core.util.InheritanceClassMap;
 import net.malisis.mdt.data.IGroup;
 import net.malisis.mdt.data.IInformation;
+import net.malisis.mdt.data.information.Action;
 import net.malisis.mdt.gui.component.GroupContainer;
+import net.malisis.mdt.gui.component.information.ActionComponent;
 import net.malisis.mdt.gui.component.information.BlockStateComponent;
 import net.malisis.mdt.gui.component.information.InformationComponent;
 import net.minecraft.block.state.IBlockState;
-
-import com.google.common.collect.Maps;
 
 /**
  * @author Ordinastie
@@ -48,20 +50,26 @@ import com.google.common.collect.Maps;
 public class ComponentProviders
 {
 	private static Map<String, BiFunction<DebugGui, IGroup, UIComponent<?>>> groupProviders = Maps.newHashMap();
-	private static Map<Class<?>, BiFunction<DebugGui, ? extends IInformation<?>, UIComponent<?>>> infoProviders = new InheritanceClassMap<>(
-			Maps.newHashMap());
+	private static Map<Class<?>, BiFunction<DebugGui, ? extends IInformation<?>, UIComponent<?>>> infoProviders = new InheritanceClassMap<>(Maps.newHashMap());
 
 	static
 	{
 		registerInformationProvider(IBlockState.class, BlockStateComponent::new);
+		registerInformationProvider(Action.class, ActionComponent::new);
 	}
 
+	/**
+	 * Register provider for .
+	 *
+	 * @param name the name
+	 * @param provider the provider
+	 */
 	public static void registerGroupProvider(String name, BiFunction<DebugGui, IGroup, UIComponent<?>> provider)
 	{
 		groupProviders.put(checkNotNull(name), checkNotNull(provider));
 	}
 
-	public static <T> void registerInformationProvider(Class<?> key, BiFunction<DebugGui, ? extends IInformation<T>, UIComponent<?>> provider)
+	public static <T, I extends IInformation<T>> void registerInformationProvider(Class<?> key, BiFunction<DebugGui, I, UIComponent<?>> provider)
 	{
 		infoProviders.put(checkNotNull(key), checkNotNull(provider));
 	}

@@ -24,6 +24,8 @@
 
 package net.malisis.mdt.gui.component;
 
+import org.lwjgl.opengl.GL11;
+
 import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.container.UIContainer;
@@ -32,8 +34,6 @@ import net.malisis.core.client.gui.component.control.UIResizeHandle;
 import net.malisis.core.client.gui.element.SimpleGuiShape;
 import net.malisis.core.renderer.RenderParameters;
 import net.malisis.mdt.DebugTool;
-
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author Ordinastie
@@ -67,6 +67,7 @@ public class DebugWindow extends UIContainer<DebugWindow>
 	public void drawBackground(GuiRenderer renderer, int mouseX, int mouseY, float partialTick)
 	{
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		renderer.enableBlending();
 
 		rp.colorMultiplier.set(0); // black
 		rp.alpha.set(200);
