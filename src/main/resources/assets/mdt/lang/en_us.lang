@@ -18,4 +18,4 @@ mdt.blockdata.groupname=Block Data
 mdt.animation.groupname=Animations
 
 mdt.multiblock.groupname=MultiBlock
-mdt.multiblock.render=Hightlight
+mdt.multiblock.render=Highlight
