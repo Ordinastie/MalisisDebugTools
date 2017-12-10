@@ -24,7 +24,11 @@
 
 package net.malisis.mdt.renderer;
 
+import java.util.List;
+
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
 
 import net.malisis.core.renderer.MalisisRenderer;
 import net.malisis.core.renderer.RenderParameters;
@@ -42,7 +46,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
  */
 public class AABBRenderer extends MalisisRenderer<TileEntity>
 {
-	private AxisAlignedBB aabb;
+	private List<AxisAlignedBB> aabbs;
 	private int color;
 	private int delay;
 	private Shape cube = new Cube();
@@ -62,7 +66,7 @@ public class AABBRenderer extends MalisisRenderer<TileEntity>
 	@Override
 	public boolean shouldRender(RenderWorldLastEvent event, IBlockAccess world)
 	{
-		return aabb != null;
+		return aabbs != null && aabbs.size() > 0;
 	}
 
 	@Override
@@ -70,20 +74,30 @@ public class AABBRenderer extends MalisisRenderer<TileEntity>
 	{
 		next(GL11.GL_LINE_LOOP);
 		disableTextures();
-		cube.resetState();
-
-		cube.setBounds(aabb);
 
 		rp.colorMultiplier.set(color);
-		drawShape(cube, rp);
-		next(GL11.GL_QUADS);
+
+		for (AxisAlignedBB aabb : aabbs)
+		{
+			cube.resetState();
+			cube.setBounds(aabb);
+			drawShape(cube, rp);
+		}
+
+		next();
 		enableTextures();
 	}
 
 	@ModMessage("renderAABB")
 	public void set(AxisAlignedBB aabb, int color, int delay)
 	{
-		this.aabb = aabb;
+		set(Lists.newArrayList(aabb), color, delay);
+	}
+
+	@ModMessage("renderAABB")
+	public void set(List<AxisAlignedBB> aabb, int color, int delay)
+	{
+		this.aabbs = aabb;
 		this.color = color;
 		this.delay = delay;
 	}
