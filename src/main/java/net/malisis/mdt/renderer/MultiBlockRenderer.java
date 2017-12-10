@@ -24,14 +24,17 @@
 
 package net.malisis.mdt.renderer;
 
-import java.util.Iterator;
-
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableSet;
 
 import net.malisis.core.registry.AutoLoad;
 import net.malisis.core.renderer.MalisisRenderer;
 import net.malisis.core.renderer.RenderParameters;
+import net.malisis.core.renderer.element.Face;
 import net.malisis.core.renderer.element.Shape;
+import net.malisis.core.renderer.element.Vertex;
 import net.malisis.core.renderer.element.shape.Cube;
 import net.malisis.core.util.MBlockState;
 import net.malisis.core.util.modmessage.ModMessage;
@@ -61,6 +64,8 @@ public class MultiBlockRenderer extends MalisisRenderer<TileEntity>
 	@Override
 	public boolean shouldRender(RenderWorldLastEvent event, IBlockAccess world)
 	{
+		if (!MultiBlock.isOrigin(world, origin))
+			mb = null;
 		return mb != null;
 	}
 
@@ -70,14 +75,27 @@ public class MultiBlockRenderer extends MalisisRenderer<TileEntity>
 		next(GL11.GL_LINE_LOOP);
 		disableTextures();
 
-		Iterator<MBlockState> it = mb.iteratorInWorld(origin);
-		while (it.hasNext())
+		Iterable<MBlockState> states = ImmutableSet.copyOf(mb.worldStates(world, origin));
+		for (MBlockState state : states)
 		{
-			MBlockState state = it.next();
+			rp.usePerVertexColor.set(false);
 			cube.resetState();
 			cube.translate(state.getX(), state.getY(), state.getZ());
 			rp.colorMultiplier.set(MultiBlock.isOrigin(world, state.getPos()) ? 0x44CC66 : 0x6677AA);
 			drawShape(cube, rp);
+
+			BlockPos origin = MultiBlock.getOrigin(world, state.getPos());
+			if (origin != null)
+			{
+				Vertex v1 = new Vertex(state.getPos().getX()
+						+ 0.5f, state.getPos().getY() + 0.5f, state.getPos().getZ() + 0.5f, 0xCC3344FF, Vertex.BRIGHTNESS_MAX);
+				Vertex v2 = new Vertex(origin.getX() + 0.5f, origin.getY() + 0.5f, origin.getZ() + 0.5f, 0x66FF66FF, Vertex.BRIGHTNESS_MAX);
+
+				rp.usePerVertexColor.set(true);
+				Shape s = new Shape(new Face(v1, v2));
+				drawShape(s, rp);
+			}
+
 		}
 		next();
 		enableTextures();
@@ -86,7 +104,7 @@ public class MultiBlockRenderer extends MalisisRenderer<TileEntity>
 	@ModMessage
 	public static void toggle(MultiBlock multiblock, BlockPos originPos)
 	{
-		if (originPos.equals(origin))
+		if (Objects.equal(originPos, origin))
 		{
 			mb = null;
 			origin = null;
