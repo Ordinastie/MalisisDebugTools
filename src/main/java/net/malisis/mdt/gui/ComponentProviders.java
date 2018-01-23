@@ -41,7 +41,9 @@ import net.malisis.mdt.gui.component.GroupContainer;
 import net.malisis.mdt.gui.component.information.ActionComponent;
 import net.malisis.mdt.gui.component.information.BlockStateComponent;
 import net.malisis.mdt.gui.component.information.InformationComponent;
+import net.malisis.mdt.gui.component.information.NBTComponent;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * @author Ordinastie
@@ -56,6 +58,7 @@ public class ComponentProviders
 	{
 		registerInformationProvider(IBlockState.class, BlockStateComponent::new);
 		registerInformationProvider(Action.class, ActionComponent::new);
+		registerInformationProvider(NBTTagCompound.class, NBTComponent::new);
 	}
 
 	/**

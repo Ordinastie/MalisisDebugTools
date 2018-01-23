@@ -53,6 +53,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -113,13 +114,15 @@ public class BlockCategory implements ICategory
 		if (te == null)
 			return null;
 
-		Set<IInformation<?>> set = ImmutableSet.of(	Information.of("mdt.te.type", te.getClass().getSimpleName()),
-													Information.of("mdt.te.update", te instanceof ITickable),
-													Information.of(	"mdt.te.inventory",
-																	te instanceof IInventory
-																			|| te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-																								null)),
-													Information.of("mdt.te.nbt", "NBT"));
+		Set<IInformation<?>> set = Sets.newLinkedHashSet();
+		set.add(Information.of("mdt.te.type", te.getClass().getSimpleName()));
+		set.add(Information.of("mdt.te.update", te instanceof ITickable));
+		set.add(Information.of(	"mdt.te.inventory",
+								te instanceof IInventory || te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)));
+
+		NBTTagCompound tag = te.writeToNBT(new NBTTagCompound());
+		if (tag.getSize() > 0)
+			set.add(Information.of("mdt.te.nbt", tag));
 
 		return new Group("mdt.te.groupname", set);
 	}
