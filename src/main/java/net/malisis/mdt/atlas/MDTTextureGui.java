@@ -27,10 +27,10 @@ package net.malisis.mdt.atlas;
 import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.UIComponent;
-import net.malisis.core.client.gui.component.container.UIBackgroundContainer;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UILabel;
 import net.malisis.core.client.gui.component.interaction.UITextField;
+import net.malisis.core.client.gui.render.ColoredBackground;
 import net.malisis.core.renderer.font.FontOptions;
 import net.malisis.core.renderer.icon.Icon;
 import net.malisis.core.util.Point;
@@ -93,9 +93,10 @@ public class MDTTextureGui extends MalisisGui
 		search.setSize(100, 12);
 		y += 12;
 
-		UIBackgroundContainer leftPanel = new UIBackgroundContainer(this);
-		leftPanel.setBorder(0xFFFFFF, 2, 255);
-		leftPanel.setBackgroundAlpha(0);
+		ColoredBackground cb = new ColoredBackground(0, 2, 0xFFFFFF);
+		cb.setBackgroundAlpha(0);
+		UIContainer<?> leftPanel = new UIContainer<>(this);
+		leftPanel.setBackground(cb);
 		leftPanel.setSize(250, UIComponent.INHERITED);
 		leftPanel.setPadding(5, 5);
 

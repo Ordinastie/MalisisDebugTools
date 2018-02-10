@@ -30,9 +30,9 @@ import java.util.function.Consumer;
 
 import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.component.UIComponent;
-import net.malisis.core.client.gui.component.container.UIBackgroundContainer;
 import net.malisis.core.client.gui.component.container.UIContainer;
 import net.malisis.core.client.gui.component.decoration.UILabel;
+import net.malisis.core.client.gui.render.ColoredBackground;
 import net.malisis.core.renderer.font.FontOptions;
 import net.malisis.mdt.data.IInformation;
 import net.malisis.mdt.gui.DebugGui;
@@ -55,7 +55,7 @@ public class NBTComponent extends UIContainer<NBTComponent>
 		add(label);
 
 		NBTTagCompound tag = information.getValue();
-		UIBackgroundContainer cont = createTagContainer(gui, tag, this);
+		UIContainer<?> cont = createTagContainer(gui, tag, this);
 		UILabel l = new ClickLabel(gui, "[" + tag.getKeySet().size() + " tags]", cont::setVisible);
 		l.setPosition(0, 0, Anchor.RIGHT);
 		add(l);
@@ -63,11 +63,11 @@ public class NBTComponent extends UIContainer<NBTComponent>
 		clipContent = false;
 	}
 
-	private UIBackgroundContainer createTagContainer(DebugGui gui, NBTTagCompound tag, UIContainer<?> parent)
+	private UIContainer<?> createTagContainer(DebugGui gui, NBTTagCompound tag, UIContainer<?> parent)
 	{
-		UIBackgroundContainer cont = new UIBackgroundContainer(gui);
+		UIContainer<?> cont = new UIContainer<>(gui);
+		cont.setBackground(new ColoredBackground(0x222277));
 		cont.setPosition(5, 10);
-		cont.setColor(0x222277);
 		cont.setPadding(5, 5);
 		cont.setSize(-5, tag.getKeySet().size() * 10 + 10);
 		cont.setZIndex(parent.getZIndex() + 5);
